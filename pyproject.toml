@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "harlequin-databricks"
+version = "0.1.0"
+description = "A Harlequin adapter for Databricks SQL Warehouse"
+authors = ["Zach Shirah <zachshirah01@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+harlequin = "^1.7"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
