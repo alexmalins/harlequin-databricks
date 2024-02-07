@@ -110,6 +110,7 @@ class HarlequinDatabricksConnection(HarlequinConnection):
         with self.conn.cursor() as cursor:
             cursor.catalogs()
             catalogs = cursor.fetchall_arrow()
+            catalogs = catalogs.sort_by([("TABLE_CAT", "ascending")])
             catalog_items: list[CatalogItem] = []
 
             for catalog_arrow in catalogs["TABLE_CAT"]:
@@ -117,6 +118,7 @@ class HarlequinDatabricksConnection(HarlequinConnection):
 
                 cursor.schemas(catalog_name=catalog)
                 schemas = cursor.fetchall_arrow()
+                schemas = schemas.sort_by([("TABLE_SCHEM", "ascending")])
                 schema_items: list[CatalogItem] = []
 
                 for schema_arrow in schemas["TABLE_SCHEM"]:
@@ -124,6 +126,7 @@ class HarlequinDatabricksConnection(HarlequinConnection):
 
                     cursor.tables(catalog_name=catalog, schema_name=schema)
                     tables = cursor.fetchall_arrow()
+                    tables = tables.sort_by([("TABLE_NAME", "ascending")])
                     table_items: list[CatalogItem] = []
 
                     for table_arrow, table_type_arrow in zip(
@@ -135,6 +138,7 @@ class HarlequinDatabricksConnection(HarlequinConnection):
                             catalog_name=catalog, schema_name=schema, table_name=table
                         )
                         columns = cursor.fetchall_arrow()
+                        columns = columns.sort_by([("ORDINAL_POSITION", "ascending")])
 
                         column_items = [
                             CatalogItem(
