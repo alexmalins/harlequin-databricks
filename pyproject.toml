@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "harlequin-databricks"
-version = "0.1.0"
+version = "0.1.1"
 description = "A Harlequin adapter for Databricks."
 authors = [
     "Zach Shirah <zachshirah01@gmail.com>",
@@ -20,7 +20,7 @@ databricks = "harlequin_databricks:HarlequinDatabricksAdapter"
 
 [tool.poetry.dependencies]
 python = ">=3.8.1,<4.0"
-harlequin = "^1.13"
+harlequin = "^1.14"
 databricks-sql-connector = "^3.0.3"
 
 [tool.poetry.group.dev.dependencies]
