@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "harlequin-databricks"
-version = "0.1.1"
+version = "0.2.0"
 description = "A Harlequin adapter for Databricks."
 authors = [
     "Zach Shirah <zachshirah01@gmail.com>",

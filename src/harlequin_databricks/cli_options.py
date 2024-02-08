@@ -1,4 +1,4 @@
-from harlequin.options import SelectOption, TextOption
+from harlequin.options import FlagOption, SelectOption, TextOption
 
 server_hostname = TextOption(
     name="server_hostname",
@@ -48,6 +48,17 @@ auth_type = SelectOption(
     short_decls=["--auth-type"],
 )
 
+skip_legacy_indexing = FlagOption(
+    name="skip_legacy_indexing",
+    description=(
+        "Skip the indexing of legacy metastores (e.g. `hive_metastore). Set this flag if your "
+        "Databricks instance runs Unity Catalog and you do not want the overhead of slow indexing "
+        "of assets in legacy metastores - i.e. you do not mind them not appearing in Harlequin's "
+        "Data Catalog pane."
+    ),
+    short_decls=["--skip-legacy-indexing"],
+)
+
 DATABRICKS_ADAPTER_OPTIONS = [
     server_hostname,
     http_path,
@@ -55,4 +66,5 @@ DATABRICKS_ADAPTER_OPTIONS = [
     username,
     password,
     auth_type,
+    skip_legacy_indexing,
 ]

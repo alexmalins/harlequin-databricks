@@ -84,6 +84,25 @@ harlequin --help
 For more information, see the
 [harlequin-databricks Docs](https://harlequin.sh/docs/databricks/index).
 
+## Using Unity Catalog and want fast Data Catalog indexing?
+
+Supply the `--skip-legacy-indexing` command line flag if you do not care about legacy metastores
+(e.g. `hive_metastore`) being indexed in Harlequin's Data Catalog pane.
+
+This flag will skip indexing of old non-Unity Catalog metastores (i.e. they won't appear in the
+Data Catalog pane with this flag).
+
+Because of the way legacy Databricks metastores works, a separate SQL query is required to fetch
+the metadata of each table in a legacy metastore. This means indexing them for Harlequin's Data Catalog pane is slow.
+
+Databricks's Unity Catalog upgrade brought
+[Information Schema](https://docs.databricks.com/en/sql/language-manual/sql-ref-information-schema.html),
+which allows harlequin-databricks to fetch metadata for all Unity Catalog assets with only two SQL queries.
+
+So if your Databricks instance is running Unity Catalog, and you no longer care about the legacy
+metastores, setting the `--skip-legacy-indexing` CLI flag is recommended as it will mean
+much faster indexing & refreshing of the assets in the Data Catalog pane.
+
 ## Issues, Contributions and Feature Requests
 
 Please report bugs/issues with this adapter via the GitHub
