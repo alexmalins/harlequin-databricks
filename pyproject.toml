@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "harlequin-databricks"
-version = "0.1.1"
+version = "0.2.0"
 description = "A Harlequin adapter for Databricks."
 authors = [
     "Zach Shirah <zachshirah01@gmail.com>",
@@ -31,9 +31,12 @@ mypy = "^1.7.0"
 pre-commit = "^3.5.0"
 importlib_metadata = { version = ">=4.6.0", python = "<3.10.0" }
 beautifulsoup4 = "^4.12.3"
+types-beautifulsoup4 = "^4.12.0.0"
 lxml = "^5.1.0"
 pandas = "^2.0.0"
+pandas-stubs = "^2.0.0.230412"
 requests = "^2.0.0"
+types-requests = "^2.25.0"
 
 [tool.poetry.urls]
 changelog = "https://github.com/alexmalins/harlequin-databricks/blob/main/CHANGELOG.md"
