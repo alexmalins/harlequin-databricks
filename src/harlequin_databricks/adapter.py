@@ -1,8 +1,7 @@
 from __future__ import annotations
 
-from typing import Any, Sequence
+from typing import Any
 
-import pyarrow as pa
 import pyarrow.compute as pc
 from databricks import sql as databricks_sql
 from databricks.sql.client import Cursor as DatabricksCursor
@@ -103,7 +102,7 @@ class HarlequinDatabricksConnection(HarlequinConnection):
     def execute(self, query: str) -> HarlequinDatabricksCursor:
         try:
             cur = self.conn.cursor()
-            cur.execute(query)  # type: ignore
+            cur.execute(query)
         except Exception as e:
             cur.close()
             raise HarlequinQueryError(
@@ -127,7 +126,8 @@ class HarlequinDatabricksConnection(HarlequinConnection):
 
             for catalog_arrow in catalogs["TABLE_CAT"]:
                 catalog = catalog_arrow.as_py()
-                if catalog in seen_catalogs: continue
+                if catalog in seen_catalogs:
+                    continue
                 seen_catalogs.append(catalog)
 
                 cursor.schemas(catalog_name=catalog)
@@ -198,7 +198,8 @@ class HarlequinDatabricksConnection(HarlequinConnection):
                 )
             # Sort the catalogs again to ensure legacy and unity catalogs appear alphabetically:
             catalog_items = [
-                catalog_item for _, catalog_item in sorted(zip(seen_catalogs, catalog_items))
+                catalog_item
+                for _, catalog_item in sorted(zip(seen_catalogs, catalog_items))
             ]
             return Catalog(items=catalog_items)
 
@@ -235,11 +236,13 @@ class HarlequinDatabricksConnection(HarlequinConnection):
                     title="Harlequin encountered an error while executing your query.",
                 ) from e
             all_tables = cursor.fetchall_arrow()
-            all_tables = all_tables.sort_by([
-                ("table_catalog", "ascending"),
-                ("table_schema", "ascending"),
-                ("table_name", "ascending"),
-            ])
+            all_tables = all_tables.sort_by(
+                [
+                    ("table_catalog", "ascending"),
+                    ("table_schema", "ascending"),
+                    ("table_name", "ascending"),
+                ]
+            )
 
             cursor.execute(
                 """SELECT
@@ -252,12 +255,14 @@ class HarlequinDatabricksConnection(HarlequinConnection):
                 FROM system.information_schema.columns"""
             )
             all_cols = cursor.fetchall_arrow()
-            all_cols = all_cols.sort_by([
-                ("table_catalog", "ascending"),
-                ("table_schema", "ascending"),
-                ("table_name", "ascending"),
-                ("ordinal_position", "ascending"),
-            ])
+            all_cols = all_cols.sort_by(
+                [
+                    ("table_catalog", "ascending"),
+                    ("table_schema", "ascending"),
+                    ("table_name", "ascending"),
+                    ("ordinal_position", "ascending"),
+                ]
+            )
             unity_catalogs = all_tables["table_catalog"].unique()
 
             for catalog_arrow in unity_catalogs:

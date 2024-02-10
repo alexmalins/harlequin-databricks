@@ -20,6 +20,10 @@ Setting this flag is recommended if your Databricks instance runs Unity Catalog 
 the overhead of slow indexing of legacy metastores. When this flag is set, only Unity Catalog
 assets will show up in the Data Catalog pane.
 
+### Bug Fixes
+
+-   Fix minor formatting (black), types (mypy) & linting (ruff) issues, and a test failure.
+
 ## [0.1.1] - 2024-02-08
 
 ### Bug Fixes
