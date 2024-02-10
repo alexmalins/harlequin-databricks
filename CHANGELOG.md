@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
-## [0.2.0] - 2024-02-09
+## [0.2.0] - 2024-02-10
 
 ### Features
 
@@ -23,6 +23,8 @@ assets will show up in the Data Catalog pane.
 ### Bug Fixes
 
 -   Fix minor formatting (black), types (mypy) & linting (ruff) issues, and a test failure.
+-   Don't use underscores in CLI option names, i.e. make it so the only acceptable option version
+is the one written with hyphens not underscores.
 
 ## [0.1.1] - 2024-02-08
 
