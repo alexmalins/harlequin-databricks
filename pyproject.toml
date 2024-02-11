@@ -39,9 +39,9 @@ requests = "^2.0.0"
 types-requests = "^2.25.0"
 
 [tool.poetry.urls]
-changelog = "https://github.com/alexmalins/harlequin-databricks/blob/main/CHANGELOG.md"
-discussions = "https://github.com/alexmalins/harlequin-databricks/discussions"
-issues = "https://github.com/alexmalins/harlequin-databricks/issues"
+Changelog = "https://github.com/alexmalins/harlequin-databricks/blob/main/CHANGELOG.md"
+Discussions = "https://github.com/alexmalins/harlequin-databricks/discussions"
+Issues = "https://github.com/alexmalins/harlequin-databricks/issues"
 
 [build-system]
 requires = ["poetry-core"]
