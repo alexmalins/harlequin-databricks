@@ -2,9 +2,9 @@ from __future__ import annotations
 
 from typing import Any
 
-import pyarrow.compute as pc
-from databricks import sql as databricks_sql
-from databricks.sql.client import Cursor as DatabricksCursor
+import pyarrow.compute as pc  # type:ignore
+from databricks import sql as databricks_sql  # type:ignore
+from databricks.sql.client import Cursor as DatabricksCursor  # type:ignore
 from harlequin import (
     HarlequinAdapter,
     HarlequinConnection,
