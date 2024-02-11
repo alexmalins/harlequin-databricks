@@ -51,6 +51,9 @@ build-backend = "poetry.core.masonry.api"
 select = ["A", "B", "E", "F", "I"]
 target-version = "py38"
 
+[tool.ruff.lint.pycodestyle]
+max-line-length = 100
+
 [tool.mypy]
 python_version = "3.8"
 files = [
