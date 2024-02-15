@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.2.1] - 2024-02-15
+
+### Bug Fixes
+
+-   Fix SQL created in the Query Editor by double clicking on catalog, schema, table or column
+names in the Data Catalog pane. Previously items were wrapped in double quotes, which is invalid
+Databricks SparkSQL.
+-   Fix outstanding ruff and mypy errors.
+
 ## [0.2.0] - 2024-02-10
 
 ### Features
@@ -39,7 +48,9 @@ is the one written with hyphens not underscores.
 
 -   Adds a Databricks adapter for SQL warehouses and DBR interactive clusters.
 
-[Unreleased]: https://github.com/alexmalins/harlequin-databricks/compare/0.2.0...HEAD
+[Unreleased]: https://github.com/alexmalins/harlequin-databricks/compare/0.2.1...HEAD
+
+[0.2.1]: https://github.com/alexmalins/harlequin-databricks/compare/0.2.0...0.2.1
 
 [0.2.0]: https://github.com/alexmalins/harlequin-databricks/compare/0.1.1...0.2.0
 
