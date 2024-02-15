@@ -158,9 +158,9 @@ class HarlequinDatabricksConnection(HarlequinConnection):
                         column_items = [
                             CatalogItem(
                                 qualified_identifier=(
-                                    f'"{catalog}"."{schema}"."{table}"."{column.as_py()}"'
+                                    f"{catalog}.{schema}.{table}.{column.as_py()}"
                                 ),
-                                query_name=f'"{column.as_py()}"',
+                                query_name=column.as_py(),
                                 label=column.as_py(),
                                 type_label=column_type.as_py(),
                             )
@@ -171,8 +171,8 @@ class HarlequinDatabricksConnection(HarlequinConnection):
 
                         table_items.append(
                             CatalogItem(
-                                qualified_identifier=f'"{catalog}"."{schema}"."{table}"',
-                                query_name=f'"{catalog}"."{schema}"."{table}"',
+                                qualified_identifier=f"{catalog}.{schema}.{table}",
+                                query_name=f"{catalog}.{schema}.{table}",
                                 label=table,
                                 type_label=table_type_arrow.as_py(),
                                 children=column_items,
@@ -180,8 +180,8 @@ class HarlequinDatabricksConnection(HarlequinConnection):
                         )
                     schema_items.append(
                         CatalogItem(
-                            qualified_identifier=f'"{catalog}"."{schema}"',
-                            query_name=f'"{catalog}"."{schema}"',
+                            qualified_identifier=f"{catalog}.{schema}",
+                            query_name=f"{catalog}.{schema}",
                             label=schema,
                             type_label="s",
                             children=table_items,
@@ -189,8 +189,8 @@ class HarlequinDatabricksConnection(HarlequinConnection):
                     )
                 catalog_items.append(
                     CatalogItem(
-                        qualified_identifier=f'"{catalog}"',
-                        query_name=f'"{catalog}"',
+                        qualified_identifier=catalog,
+                        query_name=catalog,
                         label=catalog,
                         type_label="catalog",
                         children=schema_items,
@@ -291,9 +291,9 @@ class HarlequinDatabricksConnection(HarlequinConnection):
                         column_items = [
                             CatalogItem(
                                 qualified_identifier=(
-                                    f'"{catalog}"."{schema}"."{table}"."{column.as_py()}"'
+                                    f"{catalog}.{schema}.{table}.{column.as_py()}"
                                 ),
-                                query_name=f'"{column.as_py()}"',
+                                query_name=column.as_py(),
                                 label=column.as_py(),
                                 type_label=column_type.as_py(),
                             )
@@ -304,8 +304,8 @@ class HarlequinDatabricksConnection(HarlequinConnection):
 
                         table_items.append(
                             CatalogItem(
-                                qualified_identifier=f'"{catalog}"."{schema}"."{table}"',
-                                query_name=f'"{catalog}"."{schema}"."{table}"',
+                                qualified_identifier=f"{catalog}.{schema}.{table}",
+                                query_name=f"{catalog}.{schema}.{table}",
                                 label=table,
                                 type_label=table_type_arrow.as_py(),
                                 children=column_items,
@@ -313,8 +313,8 @@ class HarlequinDatabricksConnection(HarlequinConnection):
                         )
                     schema_items.append(
                         CatalogItem(
-                            qualified_identifier=f'"{catalog}"."{schema}"',
-                            query_name=f'"{catalog}"."{schema}"',
+                            qualified_identifier=f"{catalog}.{schema}",
+                            query_name=f"{catalog}.{schema}",
                             label=schema,
                             type_label="s",
                             children=table_items,
@@ -322,8 +322,8 @@ class HarlequinDatabricksConnection(HarlequinConnection):
                     )
                 catalog_items.append(
                     CatalogItem(
-                        qualified_identifier=f'"{catalog}"',
-                        query_name=f'"{catalog}"',
+                        qualified_identifier=catalog,
+                        query_name=catalog,
                         label=catalog,
                         type_label="catalog",
                         children=schema_items,
