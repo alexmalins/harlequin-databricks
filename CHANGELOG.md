@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.3.0] - 2024-04-27
+
+-   Implement the `close()` method of `HarlequinConnection` so that the Databricks connection is
+closed when Harlequin exits.
+-   Update list of Databricks SQL functions for completions (valid as of April 24, 2024).
+
 ## [0.2.1] - 2024-02-15
 
 ### Bug Fixes
@@ -48,7 +54,9 @@ is the one written with hyphens not underscores.
 
 -   Adds a Databricks adapter for SQL warehouses and DBR interactive clusters.
 
-[Unreleased]: https://github.com/alexmalins/harlequin-databricks/compare/0.2.1...HEAD
+[Unreleased]: https://github.com/alexmalins/harlequin-databricks/compare/0.3.0...HEAD
+
+[0.3.0]: https://github.com/alexmalins/harlequin-databricks/compare/0.2.1...0.3.0
 
 [0.2.1]: https://github.com/alexmalins/harlequin-databricks/compare/0.2.0...0.2.1
 

@@ -33,7 +33,7 @@ jobs:
     - name: Install Poetry
       uses: snok/install-poetry@v1
       with:
-        version: 1.7.1
+        version: 1.8.2
         virtualenvs-create: true
         virtualenvs-in-project: true
         installer-parallel: true
@@ -56,7 +56,7 @@ jobs:
     - name: Lint with ruff
       run: |
         source .venv/bin/activate
-        ruff .
+        ruff check .
 
     - name: Check types with mypy
       run: |

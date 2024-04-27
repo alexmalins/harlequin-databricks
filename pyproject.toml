@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "harlequin-databricks"
-version = "0.2.1"
+version = "0.3.0"
 description = "A Harlequin adapter for Databricks."
 authors = [
     "Zach Shirah <zachshirah01@gmail.com>",
@@ -20,23 +20,23 @@ databricks = "harlequin_databricks:HarlequinDatabricksAdapter"
 
 [tool.poetry.dependencies]
 python = ">=3.8.1,<4.0"
-harlequin = "^1.14"
+harlequin = "^1.17"
 databricks-sql-connector = "^3.0.3"
 
 [tool.poetry.group.dev.dependencies]
-black = "^23.12.1"
-ruff = "^0.1.6"
-pytest = "^7.4.3"
-mypy = "^1.7.0"
+black = "^24.4.2"
+ruff = "^0.4.2"
+pytest = "^8.1.2"
+mypy = "^1.10.0"
 pre-commit = "^3.5.0"
-importlib_metadata = { version = ">=4.6.0", python = "<3.10.0" }
+importlib_metadata = { version = ">=7.1.0", python = "<3.10.0" }
 beautifulsoup4 = "^4.12.3"
 types-beautifulsoup4 = "^4.12.0.0"
-lxml = "^5.1.0"
+lxml = "^5.2.1"
 pandas = "^2.0.0"
 pandas-stubs = "^2.0.0.230412"
-requests = "^2.0.0"
-types-requests = "^2.25.0"
+requests = "^2.31.0"
+types-requests = "^2.31.0.20240406"
 
 [tool.poetry.urls]
 Changelog = "https://github.com/alexmalins/harlequin-databricks/blob/main/CHANGELOG.md"
@@ -79,7 +79,7 @@ strict_optional = true
 warn_return_any = true
 warn_no_return = true
 warn_redundant_casts = true
-warn_unused_ignores = true
+warn_unused_ignores = false
 warn_unused_configs = true
 
 no_implicit_reexport = true

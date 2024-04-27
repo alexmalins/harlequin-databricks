@@ -334,6 +334,10 @@ class HarlequinDatabricksConnection(HarlequinConnection):
     def get_completions(self) -> list[HarlequinCompletion]:
         return load_completions()
 
+    def close(self) -> None:
+        if self.conn:
+            self.conn.close()
+
 
 class HarlequinDatabricksAdapter(HarlequinAdapter):
     ADAPTER_OPTIONS = DATABRICKS_ADAPTER_OPTIONS
