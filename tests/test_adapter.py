@@ -1,6 +1,7 @@
 import os
 import sys
 
+import databricks  # type:ignore
 import pytest
 from harlequin.adapter import HarlequinAdapter, HarlequinConnection, HarlequinCursor
 from harlequin.catalog import Catalog, CatalogItem
@@ -54,10 +55,11 @@ def connection() -> HarlequinDatabricksConnection:
         server_hostname=os.getenv("DATABRICKS_HOST"),
         http_path=os.getenv("DATABRICKS_HTTP_PATH"),
         access_token=os.getenv("DATABRICKS_TOKEN"),
+        skip_legacy_indexing=True,
     ).connect()
 
 
-def test_get_catalog(connection: HarlequinDatabricksConnection) -> None:
+def test_get_unity_catalog(connection: HarlequinDatabricksConnection) -> None:
     catalog = connection.get_catalog()
     assert isinstance(catalog, Catalog)
     assert catalog.items
@@ -103,3 +105,9 @@ def test_set_limit(connection: HarlequinDatabricksConnection) -> None:
 def test_execute_raises_query_error(connection: HarlequinDatabricksConnection) -> None:
     with pytest.raises(HarlequinQueryError):
         _ = connection.execute("selec;")
+
+
+def test_close(connection: HarlequinDatabricksConnection) -> None:
+    connection.close()
+    with pytest.raises(databricks.sql.exc.Error):
+        connection.conn.cursor()  # cannot open a Cursor from a closed Databricks connection
