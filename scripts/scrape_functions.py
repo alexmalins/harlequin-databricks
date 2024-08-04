@@ -21,8 +21,8 @@ def scrape_functions_and_descriptions() -> pd.DataFrame:
 
     # Remove operators and expressions, then de-dupe
     functions_only = combined[
-        (combined["Function"].str.contains("\("))
-        & (combined["Function"].str.contains("\)"))
+        (combined["Function"].str.contains("\\("))
+        & (combined["Function"].str.contains("\\)"))
     ].copy()
     functions_only["Name"] = functions_only["Function"].str.split("(").str[0]
     deduped = functions_only.groupby("Name").first()
