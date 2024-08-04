@@ -2,8 +2,8 @@ from pathlib import Path
 
 import pandas as pd
 
-# Last run with Databricks's SQL functions page updated on April 24, 2024. This is archived at:
-# https://web.archive.org/web/20240427141224/https://docs.databricks.com/en/sql/language-manual/sql-ref-functions-builtin.html
+# Last run with Databricks's SQL functions page updated on August 2, 2024. This is archived at:
+# https://web.archive.org/web/20240804040816/https://docs.databricks.com/en/sql/language-manual/sql-ref-functions-builtin.html
 URL = (
     "https://docs.databricks.com/en/sql/language-manual/sql-ref-functions-builtin.html"
 )
@@ -21,8 +21,8 @@ def scrape_functions_and_descriptions() -> pd.DataFrame:
 
     # Remove operators and expressions, then de-dupe
     functions_only = combined[
-        (combined["Function"].str.contains("\("))
-        & (combined["Function"].str.contains("\)"))
+        (combined["Function"].str.contains("\\("))
+        & (combined["Function"].str.contains("\\)"))
     ].copy()
     functions_only["Name"] = functions_only["Function"].str.split("(").str[0]
     deduped = functions_only.groupby("Name").first()
@@ -36,7 +36,7 @@ def main() -> None:
     # Overwrite file in ../src/harlequin_databricks/functions.csv
     # creating it if it doesn't exist
     path = Path(__file__).parents[1] / "src" / "harlequin_databricks" / "functions.csv"
-    functions.to_csv(path)
+    functions.to_csv(path, encoding="utf-8")
 
 
 if __name__ == "__main__":

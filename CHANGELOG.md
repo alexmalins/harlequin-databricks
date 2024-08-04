@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.3.1] - 2024-08-04
+
+-   Fix `UnicodeDecodeError` on Windows due to incorrectly attempting to read `functions.csv` using
+CP-1252. Now UTF-8 is enforced on all file writes and reads (#7).
+-   Update list of Databricks SQL functions for completions (valid as of August 2, 2024).
 -   Add harlequin-databricks screenshot to README.
 
 ## [0.3.0] - 2024-04-27
@@ -56,7 +61,9 @@ is the one written with hyphens not underscores.
 
 -   Adds a Databricks adapter for SQL warehouses and DBR interactive clusters.
 
-[Unreleased]: https://github.com/alexmalins/harlequin-databricks/compare/0.3.0...HEAD
+[Unreleased]: https://github.com/alexmalins/harlequin-databricks/compare/0.3.1...HEAD
+
+[0.3.1]: https://github.com/alexmalins/harlequin-databricks/compare/0.3.0...0.3.1
 
 [0.3.0]: https://github.com/alexmalins/harlequin-databricks/compare/0.2.1...0.3.0
 

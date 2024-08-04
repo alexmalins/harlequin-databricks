@@ -47,7 +47,7 @@ def main() -> None:
     # Overwrite file in ../src/harlequin_databricks/keywords.csv
     # creating it if it doesn't exist
     path = Path(__file__).parents[1] / "src" / "harlequin_databricks" / "keywords.csv"
-    with path.open("w+") as file:
+    with path.open("w+", encoding="utf-8") as file:
         writer = csv.writer(file, delimiter="\n")
         writer.writerow(keywords)
 
