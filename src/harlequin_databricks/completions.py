@@ -10,7 +10,7 @@ def load_completions() -> list[HarlequinCompletion]:
     completions: list[HarlequinCompletion] = []
 
     keywords_path = Path(__file__).parent / "keywords.csv"
-    with keywords_path.open("r") as file:
+    with keywords_path.open("r", encoding="utf-8") as file:
         reader = csv.reader(file, dialect="unix")
         for row in reader:
             completions.append(
@@ -24,7 +24,7 @@ def load_completions() -> list[HarlequinCompletion]:
             )
 
     functions_path = Path(__file__).parent / "functions.csv"
-    with functions_path.open("r") as file:
+    with functions_path.open("r", encoding="utf-8") as file:
         reader = csv.reader(file, dialect="unix")
         next(reader)  # Skip header row
         for name, _, _ in reader:

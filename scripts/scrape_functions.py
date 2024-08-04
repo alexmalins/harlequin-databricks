@@ -36,7 +36,7 @@ def main() -> None:
     # Overwrite file in ../src/harlequin_databricks/functions.csv
     # creating it if it doesn't exist
     path = Path(__file__).parents[1] / "src" / "harlequin_databricks" / "functions.csv"
-    functions.to_csv(path)
+    functions.to_csv(path, encoding="utf-8")
 
 
 if __name__ == "__main__":
