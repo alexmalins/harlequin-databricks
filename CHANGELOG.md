@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+-   Add harlequin-databricks screenshot to README.
+
 ## [0.3.0] - 2024-04-27
 
 -   Implement the `close()` method of `HarlequinConnection` so that the Databricks connection is

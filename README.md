@@ -10,6 +10,8 @@
 A [Harlequin](https://harlequin.sh) adapter for Databricks. Supports connecting to Databricks SQL
 warehouses or Databricks Runtime (DBR) interactive clusters.
 
+<img src="img/harlequin_databricks.jpg" alt="harlequin-databricks" width="945">
+
 ## Installation
 
 `harlequin-databricks` depends on `harlequin`, so installing this package will also install Harlequin.
