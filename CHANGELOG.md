@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file.
 
 -   Fix `UnicodeDecodeError` on Windows due to incorrectly attempting to read `functions.csv` using
 CP-1252. Now UTF-8 is enforced on all file writes and reads (#7).
+-   Update list of Databricks SQL functions for completions (valid as of August 2, 2024).
 -   Add harlequin-databricks screenshot to README.
 
 ## [0.3.0] - 2024-04-27
