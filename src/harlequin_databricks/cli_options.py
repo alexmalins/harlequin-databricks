@@ -40,8 +40,11 @@ password = TextOption(
 
 auth_type = SelectOption(
     name="auth-type",
-    description="Set to `databricks-oauth` if using OAuth user-to-machine (U2M) authentication",
-    choices=["databricks-oauth"],
+    description=(
+        "Set to `databricks-oauth` or `azure-oauth` if using OAuth user-to-machine (U2M) "
+        "authentication",
+    ),
+    choices=["databricks-oauth", "azure-oauth"],
 )
 
 skip_legacy_indexing = FlagOption(
