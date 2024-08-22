@@ -42,7 +42,7 @@ auth_type = SelectOption(
     name="auth-type",
     description=(
         "Set to `databricks-oauth` or `azure-oauth` if using OAuth user-to-machine (U2M) "
-        "authentication",
+        "authentication"
     ),
     choices=["databricks-oauth", "azure-oauth"],
 )
@@ -57,6 +57,24 @@ skip_legacy_indexing = FlagOption(
     ),
 )
 
+client_id = TextOption(
+    name="client-id",
+    description=(
+        "Service principal's UUID or Application ID for OAuth machine-to-machine (M2M) "
+        "authentication. To use OAuth M2M you need to install `databricks-sdk` as an extra into "
+        "your python environment."
+    ),
+)
+
+client_secret = TextOption(
+    name="client-secret",
+    description=(
+        "Service principal's secrete for OAuth when using OAuth machine-to-machine (M2M) "
+        "authentication. To use OAuth M2M you need to install `databricks-sdk` as an extra into "
+        "your python environment."
+    ),
+)
+
 DATABRICKS_ADAPTER_OPTIONS = [
     server_hostname,
     http_path,
@@ -65,4 +83,6 @@ DATABRICKS_ADAPTER_OPTIONS = [
     password,
     auth_type,
     skip_legacy_indexing,
+    client_id,
+    client_secret,
 ]
