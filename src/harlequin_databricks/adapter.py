@@ -19,6 +19,23 @@ from harlequin_databricks.cli_options import DATABRICKS_ADAPTER_OPTIONS
 from harlequin_databricks.completions import load_completions
 
 
+def _fetch(cursor: DatabricksCursor, limit: int | None = None) -> AutoBackendType | None:
+    try:
+        rows = (
+            cursor.fetchmany_arrow(limit)
+            if limit
+            else cursor.fetchall_arrow()
+        )
+    except databricks_sql.DatabaseError:  # maybe user pressed `Cancel Query` button here
+        return None
+    except Exception as e:
+        raise HarlequinQueryError(
+            msg=e.__repr__(),
+            title="Harlequin encountered an error while querying Databricks.",
+        ) from e
+    return rows
+
+
 class HarlequinDatabricksCursor(HarlequinCursor):
     def __init__(self, cursor: DatabricksCursor, *args: Any, **kwargs: Any) -> None:
         self.cur = cursor
@@ -35,16 +52,8 @@ class HarlequinDatabricksCursor(HarlequinCursor):
         self._limit = limit
         return self
 
-    def fetchall(self) -> AutoBackendType:
-        try:
-            if self._limit is None:
-                return self.cur.fetchall_arrow()
-            return self.cur.fetchmany_arrow(self._limit)
-        except Exception as e:
-            raise HarlequinQueryError(
-                msg=str(e),
-                title="Harlequin encountered an error while executing your query.",
-            ) from e
+    def fetchall(self) -> AutoBackendType | None:
+        return _fetch(self.cur, self._limit)
 
     @staticmethod
     def _get_short_col_type(info_schema_type: str) -> str:
@@ -91,6 +100,11 @@ class HarlequinDatabricksConnection(HarlequinConnection):
     ) -> None:
         self.init_message = init_message
         self.skip_legacy_indexing = options.pop("skip_legacy_indexing")
+
+        # store the state of the catalog to reuse if the user pressing `Cancel Query` stops the
+        # catalog indexing process in-flight:
+        self._existing_catalog: Catalog = Catalog(items=[])
+
         try:
             # Set up OAuth machine-to-machine (M2M) authentication:
             if options["client_id"] or options["client_secret"]:
@@ -103,7 +117,7 @@ class HarlequinDatabricksConnection(HarlequinConnection):
                             "--client-secret CLI arguments."
                         ),
                         title="Harlequin could not connect to Databricks SQL warehouse.",
-                    ) from e
+                    )
 
                 try:
                     from databricks.sdk.core import (  # type:ignore
@@ -129,28 +143,51 @@ class HarlequinDatabricksConnection(HarlequinConnection):
                         title="Harlequin could not connect to Databricks SQL warehouse.",
                     ) from e
 
-            self.conn = databricks_sql.connect(**options)
+            self._connection_options = options
+            self.conn = databricks_sql.connect(**self._connection_options)
         except Exception as e:
             raise HarlequinConnectionError(
-                msg=str(e),
+                msg=e.__repr__(),
                 title="Harlequin could not connect to Databricks SQL warehouse.",
             ) from e
 
-    def execute(self, query: str) -> HarlequinDatabricksCursor:
+    def execute(self, query: str) -> HarlequinDatabricksCursor | None:
         try:
             cur = self.conn.cursor()
             cur.execute(query)
+        except databricks_sql.DatabaseError:  # maybe user pressed `Cancel Query` button here
+            return None
         except Exception as e:
             cur.close()
             raise HarlequinQueryError(
-                msg=str(e),
-                title="Harlequin encountered an error while executing your query.",
+                msg=e.__repr__(),
+                title="Harlequin encountered an error while querying Databricks.",
             ) from e
         return HarlequinDatabricksCursor(cur)
 
+    def cancel(self) -> None:
+        # This is a hacky way to cancel all ongoing queries of a Databricks Connection. It kills
+        # and reestablishes a fresh connection, as closing a Databricks Connection will cancel all
+        # in-flight queries which that connection started. This is a hack around the Databricks
+        # Python SQL Connector not offering a Connection-level `interrupt()` or `cancel()` method
+        # to cancel all in-flight queries, without having to kill and reestablish a new connection.
+        # The Databricks Python SQL Connector does offer a `cancel()` method at the Cursor-level,
+        # but this is hard to implement within Harlequin's existing adapter framework which
+        # requires cancellation of all ongoing queries of the Connection.
+
+        old_conn = self.conn
+        self.conn = databricks_sql.connect(**self._connection_options)
+        old_conn.close()
+
     def get_catalog(self) -> Catalog:
         catalog_items: list[CatalogItem] = []
-        catalog_items, seen_catalogs = self._get_unity_catalogs(catalog_items)
+        unity_catalog_result = self._get_unity_catalogs(catalog_items)
+    
+        # maybe user pressed `Cancel Query` button interrupting the indexing of Unity Catalog
+        # assets:
+        if unity_catalog_result is None:
+            return self._existing_catalog
+        catalog_items, seen_catalogs = unity_catalog_result
 
         if self.skip_legacy_indexing:
             return Catalog(items=catalog_items)
@@ -158,7 +195,9 @@ class HarlequinDatabricksConnection(HarlequinConnection):
         # Index legacy metastore metadata (e.g. `hive_metastore`):
         with self.conn.cursor() as cursor:
             cursor.catalogs()
-            catalogs = cursor.fetchall_arrow()
+            catalogs = _fetch(cursor)
+            if catalogs is None:  # maybe user pressed `Cancel Query` button
+                return self._existing_catalog
             catalogs = catalogs.sort_by([("TABLE_CAT", "ascending")])
 
             for catalog_arrow in catalogs["TABLE_CAT"]:
@@ -168,7 +207,9 @@ class HarlequinDatabricksConnection(HarlequinConnection):
                 seen_catalogs.append(catalog)
 
                 cursor.schemas(catalog_name=catalog)
-                schemas = cursor.fetchall_arrow()
+                schemas = _fetch(cursor)
+                if schemas is None:  # maybe user pressed `Cancel Query` button
+                    return self._existing_catalog
                 schemas = schemas.sort_by([("TABLE_SCHEM", "ascending")])
                 schema_items: list[CatalogItem] = []
 
@@ -176,7 +217,9 @@ class HarlequinDatabricksConnection(HarlequinConnection):
                     schema = schema_arrow.as_py()
 
                     cursor.tables(catalog_name=catalog, schema_name=schema)
-                    tables = cursor.fetchall_arrow()
+                    tables = _fetch(cursor)
+                    if tables is None:  # maybe user pressed `Cancel Query` button
+                        return self._existing_catalog
                     tables = tables.sort_by([("TABLE_NAME", "ascending")])
                     table_items: list[CatalogItem] = []
 
@@ -189,7 +232,9 @@ class HarlequinDatabricksConnection(HarlequinConnection):
                         cursor.columns(
                             catalog_name=catalog, schema_name=schema, table_name=table
                         )
-                        columns = cursor.fetchall_arrow()
+                        columns = _fetch(cursor)
+                        if columns is None:  # maybe user pressed `Cancel Query` button
+                            return self._existing_catalog
                         columns = columns.sort_by([("ORDINAL_POSITION", "ascending")])
 
                         column_items = [
@@ -238,12 +283,14 @@ class HarlequinDatabricksConnection(HarlequinConnection):
                 catalog_item
                 for _, catalog_item in sorted(zip(seen_catalogs, catalog_items))
             ]
-            return Catalog(items=catalog_items)
+
+            self._existing_catalog = Catalog(items=catalog_items)
+            return self._existing_catalog
 
     def _get_unity_catalogs(
         self,
         catalog_items: list[CatalogItem],
-    ) -> tuple[list[CatalogItem], list[str]]:
+    ) -> tuple[list[CatalogItem], list[str]] | None:
         """It is possible to index quickly assets on Databricks instances running Unity Catalog, as
         only two SQL queries are required to fetch all Unity Catalog assets.
 
@@ -253,6 +300,10 @@ class HarlequinDatabricksConnection(HarlequinConnection):
         This method does not return metadata for any legacy Hive metastore assets, as that data
         does not exist in `system.information_schema`:
         https://docs.databricks.com/en/sql/language-manual/sql-ref-information-schema.html
+
+        If one of the SQL queries to fetch the Unity Catalog metadata fails because the user
+        presses the `Cancel Query` button, this function will return None, triggering
+        `get_catalog()` to return the Catalog before 
         """
 
         with self.conn.cursor() as cursor:
@@ -265,14 +316,21 @@ class HarlequinDatabricksConnection(HarlequinConnection):
                     , table_type
                     FROM system.information_schema.tables"""
                 )
-            except databricks_sql.ServerOperationError as e:
+            except (databricks_sql.ServerOperationError, databricks_sql.DatabaseError) as e:
                 if e.message.startswith("[TABLE_OR_VIEW_NOT_FOUND]"):
-                    return catalog_items, []
+                    return catalog_items, []  # No Unity Catalog assets found
+                return None  # maybe user pressed `Cancel Query` button while indexing was ongoing
+            except Exception as e:
                 raise HarlequinQueryError(
-                    msg=str(e),
-                    title="Harlequin encountered an error while executing your query.",
+                    msg=e.__repr__(),
+                    title=(
+                        "Harlequin encountered an error while querying Databricks to index the "
+                        "Unity Catalog assets.",
+                    )
                 ) from e
-            all_tables = cursor.fetchall_arrow()
+            all_tables = _fetch(cursor)
+            if all_tables is None:  # maybe user pressed `Cancel Query` button here
+                return None
             all_tables = all_tables.sort_by(
                 [
                     ("table_catalog", "ascending"),
@@ -281,17 +339,30 @@ class HarlequinDatabricksConnection(HarlequinConnection):
                 ]
             )
 
-            cursor.execute(
-                """SELECT
-                  table_catalog
-                  , table_schema
-                  , table_name
-                  , column_name
-                  , ordinal_position
-                  , data_type
-                FROM system.information_schema.columns"""
-            )
-            all_cols = cursor.fetchall_arrow()
+            try:
+                cursor.execute(
+                    """SELECT
+                    table_catalog
+                    , table_schema
+                    , table_name
+                    , column_name
+                    , ordinal_position
+                    , data_type
+                    FROM system.information_schema.columns"""
+                )
+            except databricks_sql.DatabaseError:  # maybe user pressed `Cancel Query` button here
+                return None
+            except Exception as e:
+                raise HarlequinQueryError(
+                    msg=e.__repr__(),
+                    title=(
+                        "Harlequin encountered an error while querying Databricks to index the "
+                        "Data Catalog.",
+                    )
+                ) from e
+            all_cols = _fetch(cursor)
+            if all_cols is None:  # maybe user pressed `Cancel Query` button here
+                return None
             all_cols = all_cols.sort_by(
                 [
                     ("table_catalog", "ascending"),
@@ -378,6 +449,7 @@ class HarlequinDatabricksConnection(HarlequinConnection):
 
 class HarlequinDatabricksAdapter(HarlequinAdapter):
     ADAPTER_OPTIONS = DATABRICKS_ADAPTER_OPTIONS
+    IMPLEMENTS_CANCEL = True
 
     def __init__(
         self,
