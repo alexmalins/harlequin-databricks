@@ -6,11 +6,12 @@ import pytest
 from harlequin.adapter import HarlequinAdapter, HarlequinConnection, HarlequinCursor
 from harlequin.catalog import Catalog, CatalogItem
 from harlequin.exception import HarlequinConnectionError, HarlequinQueryError
+from textual_fastdatatable.backend import create_backend
+
 from harlequin_databricks.adapter import (
     HarlequinDatabricksAdapter,
     HarlequinDatabricksConnection,
 )
-from textual_fastdatatable.backend import create_backend
 
 if sys.version_info < (3, 10):
     from importlib_metadata import entry_points
