@@ -24,13 +24,14 @@ def _fetch(
 ) -> AutoBackendType | None:
     try:
         rows = cursor.fetchmany_arrow(limit) if limit else cursor.fetchall_arrow()
-    except (
-        databricks_sql.DatabaseError
-    ):  # maybe user pressed `Cancel Query` button here
-        return None
-    except Exception as e:
+    except databricks_sql.DatabaseError as e:
+        if (
+            e.message.startswith("Invalid OperationHandle:")
+            and e.__class__.__name__ == "DatabaseError"
+        ):  # maybe user pressed `Cancel Query` button here
+            return None
         raise HarlequinQueryError(
-            msg=e.__repr__(),
+            msg=repr(e),
             title="Harlequin encountered an error while querying Databricks.",
         ) from e
     return rows
@@ -147,7 +148,7 @@ class HarlequinDatabricksConnection(HarlequinConnection):
             self.conn = databricks_sql.connect(**self._connection_options)
         except Exception as e:
             raise HarlequinConnectionError(
-                msg=e.__repr__(),
+                msg=repr(e),
                 title="Harlequin could not connect to Databricks SQL warehouse.",
             ) from e
 
@@ -155,14 +156,14 @@ class HarlequinDatabricksConnection(HarlequinConnection):
         try:
             cur = self.conn.cursor()
             cur.execute(query)
-        except (
-            databricks_sql.DatabaseError
-        ):  # maybe user pressed `Cancel Query` button here
-            return None
-        except Exception as e:
-            cur.close()
+        except databricks_sql.DatabaseError as e:
+            if (
+                e.message.startswith("Invalid OperationHandle:")
+                and e.__class__.__name__ == "DatabaseError"
+            ):  # maybe user pressed `Cancel Query` button here
+                return None
             raise HarlequinQueryError(
-                msg=e.__repr__(),
+                msg=repr(e),
                 title="Harlequin encountered an error while querying Databricks.",
             ) from e
         return HarlequinDatabricksCursor(cur)
@@ -182,6 +183,12 @@ class HarlequinDatabricksConnection(HarlequinConnection):
         old_conn.close()
 
     def get_catalog(self) -> Catalog:
+        """
+        If the user presses the `Cancel Query` button while this function is executing
+        asynchronously, this function will return the Catalog as it stood before this function was
+        called (from the `self._existing_catalog` instance variable).
+        """
+
         catalog_items: list[CatalogItem] = []
         unity_catalog_result = self._get_unity_catalogs(catalog_items)
 
@@ -305,7 +312,7 @@ class HarlequinDatabricksConnection(HarlequinConnection):
 
         If one of the SQL queries to fetch the Unity Catalog metadata fails because the user
         presses the `Cancel Query` button, this function will return None, triggering
-        `get_catalog()` to return the Catalog before
+        `get_catalog()` to return the Catalog as it stood before the call to `get_catalog()`.
         """
 
         with self.conn.cursor() as cursor:
@@ -318,16 +325,14 @@ class HarlequinDatabricksConnection(HarlequinConnection):
                     , table_type
                     FROM system.information_schema.tables"""
                 )
-            except (
-                databricks_sql.ServerOperationError,
-                databricks_sql.DatabaseError,
-            ) as e:
-                if e.message.startswith("[TABLE_OR_VIEW_NOT_FOUND]"):
-                    return catalog_items, []  # No Unity Catalog assets found
-                return None  # maybe user pressed `Cancel Query` button while indexing was ongoing
-            except Exception as e:
+            except databricks_sql.DatabaseError as e:
+                if (
+                    e.message.startswith("Invalid OperationHandle:")
+                    and e.__class__.__name__ == "DatabaseError"
+                ):  # maybe user pressed `Cancel Query` button here
+                    return None
                 raise HarlequinQueryError(
-                    msg=e.__repr__(),
+                    msg=repr(e),
                     title=(
                         "Harlequin encountered an error while querying Databricks to index the "
                         "Unity Catalog assets."
@@ -355,16 +360,17 @@ class HarlequinDatabricksConnection(HarlequinConnection):
                     , data_type
                     FROM system.information_schema.columns"""
                 )
-            except (
-                databricks_sql.DatabaseError
-            ):  # maybe user pressed `Cancel Query` button here
-                return None
-            except Exception as e:
+            except databricks_sql.DatabaseError as e:
+                if (
+                    e.message.startswith("Invalid OperationHandle:")
+                    and e.__class__.__name__ == "DatabaseError"
+                ):  # maybe user pressed `Cancel Query` button here
+                    return None
                 raise HarlequinQueryError(
-                    msg=e.__repr__(),
+                    msg=repr(e),
                     title=(
                         "Harlequin encountered an error while querying Databricks to index the "
-                        "Data Catalog."
+                        "Unity Catalog assets."
                     ),
                 ) from e
             all_cols = _fetch(cursor)
