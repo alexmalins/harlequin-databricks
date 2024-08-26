@@ -19,14 +19,14 @@ from harlequin_databricks.cli_options import DATABRICKS_ADAPTER_OPTIONS
 from harlequin_databricks.completions import load_completions
 
 
-def _fetch(cursor: DatabricksCursor, limit: int | None = None) -> AutoBackendType | None:
+def _fetch(
+    cursor: DatabricksCursor, limit: int | None = None
+) -> AutoBackendType | None:
     try:
-        rows = (
-            cursor.fetchmany_arrow(limit)
-            if limit
-            else cursor.fetchall_arrow()
-        )
-    except databricks_sql.DatabaseError:  # maybe user pressed `Cancel Query` button here
+        rows = cursor.fetchmany_arrow(limit) if limit else cursor.fetchall_arrow()
+    except (
+        databricks_sql.DatabaseError
+    ):  # maybe user pressed `Cancel Query` button here
         return None
     except Exception as e:
         raise HarlequinQueryError(
@@ -155,7 +155,9 @@ class HarlequinDatabricksConnection(HarlequinConnection):
         try:
             cur = self.conn.cursor()
             cur.execute(query)
-        except databricks_sql.DatabaseError:  # maybe user pressed `Cancel Query` button here
+        except (
+            databricks_sql.DatabaseError
+        ):  # maybe user pressed `Cancel Query` button here
             return None
         except Exception as e:
             cur.close()
@@ -182,7 +184,7 @@ class HarlequinDatabricksConnection(HarlequinConnection):
     def get_catalog(self) -> Catalog:
         catalog_items: list[CatalogItem] = []
         unity_catalog_result = self._get_unity_catalogs(catalog_items)
-    
+
         # maybe user pressed `Cancel Query` button interrupting the indexing of Unity Catalog
         # assets:
         if unity_catalog_result is None:
@@ -303,7 +305,7 @@ class HarlequinDatabricksConnection(HarlequinConnection):
 
         If one of the SQL queries to fetch the Unity Catalog metadata fails because the user
         presses the `Cancel Query` button, this function will return None, triggering
-        `get_catalog()` to return the Catalog before 
+        `get_catalog()` to return the Catalog before
         """
 
         with self.conn.cursor() as cursor:
@@ -316,7 +318,10 @@ class HarlequinDatabricksConnection(HarlequinConnection):
                     , table_type
                     FROM system.information_schema.tables"""
                 )
-            except (databricks_sql.ServerOperationError, databricks_sql.DatabaseError) as e:
+            except (
+                databricks_sql.ServerOperationError,
+                databricks_sql.DatabaseError,
+            ) as e:
                 if e.message.startswith("[TABLE_OR_VIEW_NOT_FOUND]"):
                     return catalog_items, []  # No Unity Catalog assets found
                 return None  # maybe user pressed `Cancel Query` button while indexing was ongoing
@@ -326,7 +331,7 @@ class HarlequinDatabricksConnection(HarlequinConnection):
                     title=(
                         "Harlequin encountered an error while querying Databricks to index the "
                         "Unity Catalog assets.",
-                    )
+                    ),
                 ) from e
             all_tables = _fetch(cursor)
             if all_tables is None:  # maybe user pressed `Cancel Query` button here
@@ -350,7 +355,9 @@ class HarlequinDatabricksConnection(HarlequinConnection):
                     , data_type
                     FROM system.information_schema.columns"""
                 )
-            except databricks_sql.DatabaseError:  # maybe user pressed `Cancel Query` button here
+            except (
+                databricks_sql.DatabaseError
+            ):  # maybe user pressed `Cancel Query` button here
                 return None
             except Exception as e:
                 raise HarlequinQueryError(
@@ -358,7 +365,7 @@ class HarlequinDatabricksConnection(HarlequinConnection):
                     title=(
                         "Harlequin encountered an error while querying Databricks to index the "
                         "Data Catalog.",
-                    )
+                    ),
                 ) from e
             all_cols = _fetch(cursor)
             if all_cols is None:  # maybe user pressed `Cancel Query` button here
