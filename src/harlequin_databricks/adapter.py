@@ -134,7 +134,7 @@ class HarlequinDatabricksConnection(HarlequinConnection):
                             client_id=client_id,
                             client_secret=client_secret,
                         )
-                        return oauth_service_principal(config)
+                        return oauth_service_principal(config)  # type:ignore
 
                     options["credentials_provider"] = credentials_provider
                 except ImportError as e:
@@ -330,7 +330,7 @@ class HarlequinDatabricksConnection(HarlequinConnection):
                     msg=e.__repr__(),
                     title=(
                         "Harlequin encountered an error while querying Databricks to index the "
-                        "Unity Catalog assets.",
+                        "Unity Catalog assets."
                     ),
                 ) from e
             all_tables = _fetch(cursor)
@@ -364,7 +364,7 @@ class HarlequinDatabricksConnection(HarlequinConnection):
                     msg=e.__repr__(),
                     title=(
                         "Harlequin encountered an error while querying Databricks to index the "
-                        "Data Catalog.",
+                        "Data Catalog."
                     ),
                 ) from e
             all_cols = _fetch(cursor)
