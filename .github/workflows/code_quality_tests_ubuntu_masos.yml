@@ -1,0 +1,73 @@
+name: Code formatting, linting, type checks and tests on ubuntu-latest and macos-latest
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    - cron: "0 12 * * 1"  # every Monday at 12:00 UTC
+  workflow_dispatch:
+
+jobs:
+  code_quality_ubuntu_macos:
+    strategy:
+      matrix:
+        os: ['ubuntu-latest', 'macos-latest']
+        python-version: ['3.8', '3.12']
+    defaults:
+      run:
+        shell: bash
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+
+    steps:
+      - name: Check out code repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install Poetry
+        uses: snok/install-poetry@v1
+        with:
+          virtualenvs-create: true
+          virtualenvs-in-project: true
+
+      - name: Install package with latest version of all dependencies
+        run: |
+          poetry update --no-interaction --sync
+          poetry install --no-interaction --all-extras
+
+      - name: Run Black check
+        run: |
+          source $VENV
+          black . --check
+
+      - name: Lint with ruff
+        run: |
+          source $VENV
+          ruff check .
+
+      - name: Check types with mypy
+        run: |
+          source $VENV
+          mypy .
+        if: ${{ matrix.python-version == '3.8' }}
+      - name: Check types with mypy
+        run: |
+          source $VENV
+          mypy . --ignore-missing-imports
+        if: ${{ matrix.python-version == '3.12' }}
+
+      - name: Run tests
+        env:
+          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+          DATABRICKS_HTTP_PATH: ${{ secrets.DATABRICKS_HTTP_PATH }}
+          DATABRICKS_CLIENT_ID: ${{ secrets.DATABRICKS_CLIENT_ID }}
+          DATABRICKS_CLIENT_SECRET: ${{ secrets.DATABRICKS_CLIENT_SECRET }}
+        run: |
+          source $VENV
+          pytest -v
