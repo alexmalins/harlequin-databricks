@@ -64,46 +64,60 @@ pipx install harlequin[databricks]
 
 ## Usage and Configuration
 
-For a minimum connection you are going to need:
+To connect to Databricks you are going to need to provide as CLI arguments:
 
 - server-hostname
 - http-path
-- access-token
+- credentials for one of the following authentication methods:
+  - a personal access token (PAT)
+  - a username and password
+  - an OAuth U2M type
+  - a service principle client ID and secret for OAuth M2M
+
+
+### Personal Access Token (PAT) authentication:
 
 ```bash
-harlequin -a databricks --server-hostname my_databricks.cloud.databricks.com --http-path /sql/1.0/endpoints/1234567890abcdef --access-token dabpi***
+harlequin -a databricks --server-hostname ***.cloud.databricks.com --http-path /sql/1.0/endpoints/*** --access-token dabpi***
 ```
 
-Authentication is also possible using a username and password (known as basic authentication):
+### Username and password (basic) authentication:
 
 ```bash
-harlequin -a databricks --server-hostname my_databricks.cloud.databricks.com --http-path /sql/1.0/endpoints/1234567890abcdef --username my_user --password my_pass
+harlequin -a databricks --server-hostname ***.cloud.databricks.com --http-path /sql/1.0/endpoints/*** --username *** --password ***
 ```
 
-Or by using [OAuth user-to-machine (U2M) authentication](https://docs.databricks.com/en/dev-tools/python-sql-connector.html#auth-u2m)
-- supply `databricks-oauth` or `azure-oauth` to the `--auth-type` CLI argument:
+### OAuth U2M authentication:
+
+For [OAuth user-to-machine (U2M) authentication](https://docs.databricks.com/en/dev-tools/python-sql-connector.html#auth-u2m)
+supply either `databricks-oauth` or `azure-oauth` to the `--auth-type` CLI argument:
 
 ```bash
-harlequin -a databricks --server-hostname my_databricks.cloud.databricks.com --http-path /sql/1.0/endpoints/1234567890abcdef --auth-type databricks-oauth
+harlequin -a databricks --server-hostname ***.cloud.databricks.com --http-path /sql/1.0/endpoints/*** --auth-type databricks-oauth
 ```
 
-Or via [OAuth machine-to-machine (M2M) authentication](https://docs.databricks.com/en/dev-tools/python-sql-connector.html#oauth-machine-to-machine-m2m-authentication),
-which also requires you `pip install databricks-sdk` as an additional dependency
+### OAuth M2M authentication:
+
+For [OAuth machine-to-machine (M2M) authentication](https://docs.databricks.com/en/dev-tools/python-sql-connector.html#oauth-machine-to-machine-m2m-authentication)
+you need to `pip install databricks-sdk` as an additional dependency
 ([databricks-sdk](https://github.com/databricks/databricks-sdk-py) is an optional dependency of
-`harlequin-databricks`):
+`harlequin-databricks`) and supply `--client-id` and `--client-secret` CLI arguments:
 
 ```bash
-harlequin -a databricks --server-hostname my_databricks.cloud.databricks.com --http-path /sql/1.0/endpoints/1234567890abcdef --client-id *** --client-secret ***
+harlequin -a databricks --server-hostname ***.cloud.databricks.com --http-path /sql/1.0/endpoints/*** --client-id *** --client-secret ***
 ```
 
-For more details on command line options, run:
+## Store an alias for your connection string
+
+We recommend you include an alias for your connection string in your `.bash_profile`/`.zprofile` so
+you can launch harlequin-databricks with a short command like `hdb` each time.
+
+Run this command
+(once) to create the alias:
 
 ```bash
-harlequin --help
+echo 'alias hdb="harlequin -a databricks --server-hostname ***.cloud.databricks.com --http-path /sql/1.0/endpoints/*** --access-token dabpi***"' >> .bash_profile    
 ```
-
-For more information, see the
-[harlequin-databricks Docs](https://harlequin.sh/docs/databricks/index).
 
 ## Using Unity Catalog and want fast Data Catalog indexing?
 
@@ -124,11 +138,22 @@ So if your Databricks instance is running Unity Catalog, and you no longer care 
 metastores, setting the `--skip-legacy-indexing` CLI flag is recommended as it will mean
 much faster indexing & refreshing of the assets in the Data Catalog pane.
 
+## Other CLI options:
+
+For more details on command line options, run:
+
+```bash
+harlequin --help
+```
+
+For more information, see the
+[harlequin-databricks Docs](https://harlequin.sh/docs/databricks/index).
+
 ## Issues, Contributions and Feature Requests
 
 Please report bugs/issues with this adapter via the GitHub
 [issues](https://github.com/alexmalins/harlequin-databricks/issues) page. You are welcome to
-attempt fixes yourself by forking this repo then opening an [PR](https://github.com/alexmalins/harlequin-databricks/pulls).
+attempt fixes yourself by forking this repo then opening a [PR](https://github.com/alexmalins/harlequin-databricks/pulls).
 
 For feature suggestions, please post in the
 [discussions](https://github.com/alexmalins/harlequin-databricks/discussions).
