@@ -3,6 +3,8 @@
 [![PyPI](https://img.shields.io/pypi/v/harlequin-databricks)](https://pypi.org/project/harlequin-databricks/)
 [![Conda](https://anaconda.org/conda-forge/harlequin-databricks/badges/version.svg)](https://anaconda.org/conda-forge/harlequin-databricks)
 [![Python Version](https://img.shields.io/pypi/pyversions/harlequin-databricks)](https://pypi.org/project/harlequin-databricks/)
+[![Tests](https://github.com/alexmalins/harlequin-databricks/actions/workflows/code_quality_tests_ubuntu_masos.yml/badge.svg)](https://github.com/alexmalins/harlequin-databricks/actions/workflows/code_quality_tests_ubuntu_masos.yml)
+[![Tests on Windows](https://github.com/alexmalins/harlequin-databricks/actions/workflows/tests_windows_latest.yml/badge.svg)](https://github.com/alexmalins/harlequin-databricks/actions/workflows/tests_windows_latest.yml)
 [![Code Style: Black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/alexmalins/harlequin-databricks/actions/workflows/code_quality.yml)
 [![License: MIT](https://img.shields.io/pypi/l/harlequin-databricks)](https://github.com/alexmalins/harlequin-databricks/blob/main/LICENSE)
 [![Downloads](https://static.pepy.tech/badge/harlequin-databricks)](https://pepy.tech/project/harlequin-databricks)
