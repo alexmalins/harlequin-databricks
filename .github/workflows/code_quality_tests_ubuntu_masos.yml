@@ -1,4 +1,4 @@
-name: Code formatting, linting, type checks and tests on ubuntu-latest and macos-latest
+name: Code checks & tests (Ubuntu & macOS)
 
 on:
   push:
