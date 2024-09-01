@@ -1,16 +1,18 @@
 import os
 import sys
+from typing import Iterator
 
 import databricks  # type:ignore
 import pytest
 from harlequin.adapter import HarlequinAdapter, HarlequinConnection, HarlequinCursor
 from harlequin.catalog import Catalog, CatalogItem
 from harlequin.exception import HarlequinConnectionError, HarlequinQueryError
+from textual_fastdatatable.backend import create_backend
+
 from harlequin_databricks.adapter import (
     HarlequinDatabricksAdapter,
     HarlequinDatabricksConnection,
 )
-from textual_fastdatatable.backend import create_backend
 
 if sys.version_info < (3, 10):
     from importlib_metadata import entry_points
@@ -32,16 +34,23 @@ def test_connect() -> None:
         server_hostname=os.getenv("DATABRICKS_HOST"),
         http_path=os.getenv("DATABRICKS_HTTP_PATH"),
         access_token=os.getenv("DATABRICKS_TOKEN"),
+        client_id=os.getenv("DATABRICKS_CLIENT_ID"),
+        client_secret=os.getenv("DATABRICKS_CLIENT_SECRET"),
     ).connect()
     assert isinstance(conn, HarlequinConnection)
+    conn.close()
 
 
 def test_init_extra_kwargs() -> None:
-    assert HarlequinDatabricksAdapter(
+    conn = HarlequinDatabricksAdapter(
         server_hostname=os.getenv("DATABRICKS_HOST"),
         http_path=os.getenv("DATABRICKS_HTTP_PATH"),
         access_token=os.getenv("DATABRICKS_TOKEN"),
+        client_id=os.getenv("DATABRICKS_CLIENT_ID"),
+        client_secret=os.getenv("DATABRICKS_CLIENT_SECRET"),
     ).connect()
+    assert conn
+    conn.close()
 
 
 def test_connect_raises_connection_error() -> None:
@@ -50,13 +59,20 @@ def test_connect_raises_connection_error() -> None:
 
 
 @pytest.fixture
-def connection() -> HarlequinDatabricksConnection:
-    return HarlequinDatabricksAdapter(
+def connection() -> Iterator[HarlequinDatabricksConnection]:
+    conn = HarlequinDatabricksAdapter(
         server_hostname=os.getenv("DATABRICKS_HOST"),
         http_path=os.getenv("DATABRICKS_HTTP_PATH"),
         access_token=os.getenv("DATABRICKS_TOKEN"),
+        client_id=os.getenv("DATABRICKS_CLIENT_ID"),
+        client_secret=os.getenv("DATABRICKS_CLIENT_SECRET"),
         skip_legacy_indexing=True,
     ).connect()
+
+    # yield conn is returned for each test fixture, then pytest runs conn.close() to clean up after
+    # each test:
+    yield conn
+    conn.close()
 
 
 def test_get_unity_catalog(connection: HarlequinDatabricksConnection) -> None:

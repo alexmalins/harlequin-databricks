@@ -78,10 +78,20 @@ Authentication is also possible using a username and password (known as basic au
 harlequin -a databricks --server-hostname my_databricks.cloud.databricks.com --http-path /sql/1.0/endpoints/1234567890abcdef --username my_user --password my_pass
 ```
 
-Or by using [OAuth user-to-machine (U2M) authentication](https://docs.databricks.com/en/dev-tools/python-sql-connector.html#auth-u2m):
+Or by using [OAuth user-to-machine (U2M) authentication](https://docs.databricks.com/en/dev-tools/python-sql-connector.html#auth-u2m)
+- supply `databricks-oauth` or `azure-oauth` to the `--auth-type` CLI argument:
 
 ```bash
 harlequin -a databricks --server-hostname my_databricks.cloud.databricks.com --http-path /sql/1.0/endpoints/1234567890abcdef --auth-type databricks-oauth
+```
+
+Or via [OAuth machine-to-machine (M2M) authentication](https://docs.databricks.com/en/dev-tools/python-sql-connector.html#oauth-machine-to-machine-m2m-authentication),
+which also requires you `pip install databricks-sdk` as an additional dependency
+([databricks-sdk](https://github.com/databricks/databricks-sdk-py) is an optional dependency of
+`harlequin-databricks`):
+
+```bash
+harlequin -a databricks --server-hostname my_databricks.cloud.databricks.com --http-path /sql/1.0/endpoints/1234567890abcdef --client-id *** --client-secret ***
 ```
 
 For more details on command line options, run:

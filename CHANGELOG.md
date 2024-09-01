@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.4.0] - 2024-09-01
+
+## Features
+
+-   Add support for cancelling queries mid-flight. Requires Harlequin `>=1.24.0` which introduced
+the "Cancel Query" button.
+-   Add support for Azure in OAuth user-to-machine authentication for Databricks running on Azure.
+-   Add support for OAuth machine-to-machine (M2M) authentication to Databricks. This allows you to
+use service principle credentials to connect to Databricks via Harlequin, useful for testing. To
+use OAuth M2M, supply a `--client-id` and a `--client-secret` (i.e. a service principle OAuth
+token) via CLI arguments.
+-   Better error handling and debug messages when database query errors occur.
+
 ## [0.3.1] - 2024-08-04
 
 -   Fix `UnicodeDecodeError` on Windows due to incorrectly attempting to read `functions.csv` using
@@ -61,7 +74,9 @@ is the one written with hyphens not underscores.
 
 -   Adds a Databricks adapter for SQL warehouses and DBR interactive clusters.
 
-[Unreleased]: https://github.com/alexmalins/harlequin-databricks/compare/0.3.1...HEAD
+[Unreleased]: https://github.com/alexmalins/harlequin-databricks/compare/0.4.0...HEAD
+
+[0.4.0]: https://github.com/alexmalins/harlequin-databricks/compare/0.3.1...0.4.0
 
 [0.3.1]: https://github.com/alexmalins/harlequin-databricks/compare/0.3.0...0.3.1
 
