@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from pathlib import Path
 from typing import Any
 
 import pyarrow.compute as pc  # type:ignore
@@ -12,7 +13,11 @@ from harlequin import (
 )
 from harlequin.autocomplete.completion import HarlequinCompletion
 from harlequin.catalog import Catalog, CatalogItem
-from harlequin.exception import HarlequinConnectionError, HarlequinQueryError
+from harlequin.exception import (
+    HarlequinConfigError,
+    HarlequinConnectionError,
+    HarlequinQueryError,
+)
 from textual_fastdatatable.backend import AutoBackendType
 
 from harlequin_databricks.cli_options import DATABRICKS_ADAPTER_OPTIONS
@@ -99,58 +104,103 @@ class HarlequinDatabricksConnection(HarlequinConnection):
         init_message: str = "",
         options: dict[str, Any],
     ) -> None:
-        self.init_message = init_message
+        self._original_init_message = init_message
         self.skip_legacy_indexing = options.pop("skip_legacy_indexing")
+        self.init_path = options.pop("init_path")
+        self.no_init = options.pop("no_init")
+
+        self.init_script = (
+            self._read_init_script(self.init_path)
+            if self.init_path is not None and not self.no_init
+            else None
+        )
 
         # store the state of the catalog to reuse if the user pressing `Cancel Query` stops the
-        # catalog indexing process in-flight:
+        # catalog indexing thread in-flight:
         self._existing_catalog: Catalog = Catalog(items=[])
 
+        # Set up OAuth machine-to-machine (M2M) authentication:
+        client_id = options.pop("client_id")
+        client_secret = options.pop("client_secret")
+        if client_id or client_secret:
+            if client_id is None or client_secret is None:
+                raise HarlequinConnectionError(
+                    msg=(
+                        "To use OAuth M2M you must supply both --client-id and "
+                        "--client-secret CLI arguments."
+                    ),
+                    title="Harlequin could not connect to Databricks SQL warehouse.",
+                )
+
+            try:
+                from databricks.sdk.core import (  # type:ignore
+                    Config,
+                    oauth_service_principal,
+                )
+                from databricks.sdk.credentials_provider import (  # type:ignore
+                    CredentialsProvider,
+                )
+
+                def credentials_provider() -> CredentialsProvider | None:
+                    config = Config(
+                        host=f'https://{options["server_hostname"]}',
+                        client_id=client_id,
+                        client_secret=client_secret,
+                    )
+                    return oauth_service_principal(config)  # type:ignore
+
+                options["credentials_provider"] = credentials_provider
+            except ImportError as e:
+                raise HarlequinConnectionError(
+                    msg="To use OAuth M2M you must install `databricks-sdk` as an extra",
+                    title="Harlequin could not connect to Databricks SQL warehouse.",
+                ) from e
+
+        self._connection_options = options
+        self._connect_and_run_init_script()
+
+    def _connect_and_run_init_script(self) -> None:
         try:
-            # Set up OAuth machine-to-machine (M2M) authentication:
-            if options["client_id"] or options["client_secret"]:
-                client_id = options.pop("client_id")
-                client_secret = options.pop("client_secret")
-                if client_id is None or client_secret is None:
-                    raise HarlequinConnectionError(
-                        msg=(
-                            "To use OAuth M2M you must supply both --client-id and "
-                            "--client-secret CLI arguments."
-                        ),
-                        title="Harlequin could not connect to Databricks SQL warehouse.",
-                    )
-
-                try:
-                    from databricks.sdk.core import (  # type:ignore
-                        Config,
-                        oauth_service_principal,
-                    )
-                    from databricks.sdk.credentials_provider import (  # type:ignore
-                        CredentialsProvider,
-                    )
-
-                    def credentials_provider() -> CredentialsProvider | None:
-                        config = Config(
-                            host=f'https://{options["server_hostname"]}',
-                            client_id=client_id,
-                            client_secret=client_secret,
-                        )
-                        return oauth_service_principal(config)  # type:ignore
-
-                    options["credentials_provider"] = credentials_provider
-                except ImportError as e:
-                    raise HarlequinConnectionError(
-                        msg="To use OAuth M2M you must install `databricks-sdk` as an extra",
-                        title="Harlequin could not connect to Databricks SQL warehouse.",
-                    ) from e
-
-            self._connection_options = options
             self.conn = databricks_sql.connect(**self._connection_options)
         except Exception as e:
             raise HarlequinConnectionError(
                 msg=repr(e),
                 title="Harlequin could not connect to Databricks SQL warehouse.",
             ) from e
+
+        msg = ""
+        if self.init_script:
+            try:
+                count = 0
+                for cmd in self.init_script.split(";"):
+                    stripped_cmd = cmd.strip()
+                    if not stripped_cmd:
+                        continue
+                    self.execute(stripped_cmd)
+                    count += 1
+            except HarlequinQueryError as e:
+                msg = f"Attempted to execute script at {self.init_path}\n{e}"
+                raise HarlequinConnectionError(
+                    msg,
+                    title="Databricks errored while executing your initialization script.",
+                ) from e
+            else:
+                if count > 0:
+                    msg = (
+                        f"Executed {count} {'command' if count == 1 else 'commands'} "
+                        f"from {self.init_path}"
+                    )
+
+        self.init_message = self._original_init_message + ("\n" + msg if msg else "")
+
+    @staticmethod
+    def _read_init_script(init_path: Path) -> str:
+        try:
+            with open(init_path.expanduser(), "r") as f:
+                init_script = f.read()
+        except OSError:
+            init_script = ""
+        return init_script
 
     def execute(self, query: str) -> HarlequinDatabricksCursor | None:
         try:
@@ -179,7 +229,7 @@ class HarlequinDatabricksConnection(HarlequinConnection):
         # requires cancellation of all ongoing queries of the Connection.
 
         old_conn = self.conn
-        self.conn = databricks_sql.connect(**self._connection_options)
+        self._connect_and_run_init_script()
         old_conn.close()
 
     def get_catalog(self) -> Catalog:
@@ -475,8 +525,23 @@ class HarlequinDatabricksAdapter(HarlequinAdapter):
         skip_legacy_indexing: bool | None = False,
         client_id: str | None = None,
         client_secret: str | None = None,
+        init_path: Path | str | None = None,
+        no_init: bool | str = False,
         **_: Any,
     ) -> None:
+        try:
+            init_path = (
+                Path(init_path).resolve()
+                if init_path is not None
+                else Path.home() / ".databricksrc"
+            )
+            no_init = bool(no_init)
+        except (ValueError, TypeError) as e:
+            raise HarlequinConfigError(
+                msg=f"Databricks adapter received bad config value: {e}",
+                title="Harlequin could not initialize the selected adapter.",
+            ) from e
+
         self.options = {
             "server_hostname": server_hostname,
             "http_path": http_path,
@@ -487,6 +552,8 @@ class HarlequinDatabricksAdapter(HarlequinAdapter):
             "skip_legacy_indexing": skip_legacy_indexing,
             "client_id": client_id,
             "client_secret": client_secret,
+            "init_path": init_path,
+            "no_init": no_init,
         }
 
     def connect(self) -> HarlequinDatabricksConnection:

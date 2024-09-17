@@ -62,7 +62,7 @@ poetry add harlequin[databricks]
 pipx install harlequin[databricks]
 ```
 
-## Usage and Configuration
+## Connecting to Databricks
 
 To connect to Databricks you are going to need to provide as CLI arguments:
 
@@ -138,9 +138,41 @@ So if your Databricks instance is running Unity Catalog, and you no longer care 
 metastores, setting the `--skip-legacy-indexing` CLI flag is recommended as it will mean
 much faster indexing & refreshing of the assets in the Data Catalog pane.
 
+## Initialization Scripts
+
+Each time you start Harlequin, it will execute SQL commands from a Databricks initialization script.
+For example:
+
+```sql
+USE CATALOG my_catalog;
+SET TIME ZONE 'Asia/Tokyo';
+DECLARE yesterday DATE DEFAULT CURRENT_DATE - INTERVAL '1' DAY;
+```
+
+Multi-line SQL is allowed, but must be terminated by a semicolon.
+
+### Configuring the Script Location
+
+By default, Harlequin will execute the script found at `~/.databricksrc`. However, you can provide
+a different path using the `--init-path` option (aliased to `-i` or `-init`):
+
+```bash
+harlequin -a databricks --init-path /path/to/my/script.sql
+```
+
+### Disabling Initialization
+
+If you would like to open Harlequin without running the script you have at `~/.databricksrc`, you
+can either pass a nonexistent path (or `/dev/null`) to the option above, or start Harlequin with
+the `--no-init` option:
+
+```bash
+harlequin -a databricks --no-init
+```
+
 ## Other CLI options:
 
-For more details on command line options, run:
+For more details on other command line options, run:
 
 ```bash
 harlequin --help
