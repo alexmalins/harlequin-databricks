@@ -4,9 +4,16 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.5.1] - 2024-09-21
+
+### Bug Fixes
+
+-   Fix bug to properly resolve initialization script paths starting with `~` (i.e. user's home
+dir) supplied to `--init-path`.
+
 ## [0.5.0] - 2024-09-21
 
-## Features
+### Features
 
 -   Add support for initialization scripts. By default harlequin-databricks will attempt to run an
 initialization script of SQL commands against Databricks from `~/.databricksrc` or from the file
@@ -17,7 +24,7 @@ a non-existent file path to `--init-path`. (#14)
 
 ## [0.4.0] - 2024-09-01
 
-## Features
+### Features
 
 -   Add support for cancelling queries mid-flight. Requires Harlequin `>=1.24.0` which introduced
 the "Cancel Query" button.
@@ -85,7 +92,9 @@ is the one written with hyphens not underscores.
 
 -   Adds a Databricks adapter for SQL warehouses and DBR interactive clusters.
 
-[Unreleased]: https://github.com/alexmalins/harlequin-databricks/compare/0.5.0...HEAD
+[Unreleased]: https://github.com/alexmalins/harlequin-databricks/compare/0.5.1...HEAD
+
+[0.5.1]: https://github.com/alexmalins/harlequin-databricks/compare/0.5.0...0.5.1
 
 [0.5.0]: https://github.com/alexmalins/harlequin-databricks/compare/0.4.0...0.5.0
 

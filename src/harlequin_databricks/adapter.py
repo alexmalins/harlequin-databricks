@@ -531,7 +531,7 @@ class HarlequinDatabricksAdapter(HarlequinAdapter):
     ) -> None:
         try:
             init_path = (
-                Path(init_path).resolve()
+                Path(init_path).expanduser().resolve()
                 if init_path is not None
                 else Path.home() / ".databricksrc"
             )
