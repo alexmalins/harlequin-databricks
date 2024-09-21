@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.5.0] - 2024-09-21
+
+## Features
+
+-   Add support for initialization scripts. By default harlequin-databricks will attempt to run an
+initialization script of SQL commands against Databricks from `~/.databricksrc` or from the file
+specified via the `--init-path` CLI option. This means you can e.g. set a default catalog
+(`USE CATALOG ...`), timezone, or set of user-defined variables for the session. It is possible to
+disable initialization via the `--no-init` CLI flag, having no  `~/.databricksrc` file, or feeding
+a non-existent file path to `--init-path`. (#14)
+
 ## [0.4.0] - 2024-09-01
 
 ## Features
@@ -74,7 +85,9 @@ is the one written with hyphens not underscores.
 
 -   Adds a Databricks adapter for SQL warehouses and DBR interactive clusters.
 
-[Unreleased]: https://github.com/alexmalins/harlequin-databricks/compare/0.4.0...HEAD
+[Unreleased]: https://github.com/alexmalins/harlequin-databricks/compare/0.5.0...HEAD
+
+[0.5.0]: https://github.com/alexmalins/harlequin-databricks/compare/0.4.0...0.5.0
 
 [0.4.0]: https://github.com/alexmalins/harlequin-databricks/compare/0.3.1...0.4.0
 
