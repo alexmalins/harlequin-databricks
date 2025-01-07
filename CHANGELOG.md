@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Breaking Changes
+- Drops support for Python 3.8 (#17). 
+
 ## [0.5.1] - 2024-09-21
 
 ### Bug Fixes
