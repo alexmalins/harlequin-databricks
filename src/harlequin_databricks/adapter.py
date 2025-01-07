@@ -4,8 +4,8 @@ from pathlib import Path
 from typing import Any
 
 import pyarrow.compute as pc  # type:ignore
-from databricks import sql as databricks_sql  # type:ignore
-from databricks.sql.client import Cursor as DatabricksCursor  # type:ignore
+from databricks import sql as databricks_sql
+from databricks.sql.client import Cursor as DatabricksCursor
 from harlequin import (
     HarlequinAdapter,
     HarlequinConnection,
@@ -133,11 +133,11 @@ class HarlequinDatabricksConnection(HarlequinConnection):
                 )
 
             try:
-                from databricks.sdk.core import (  # type:ignore
+                from databricks.sdk.core import (
                     Config,
                     oauth_service_principal,
                 )
-                from databricks.sdk.credentials_provider import (  # type:ignore
+                from databricks.sdk.credentials_provider import (
                     CredentialsProvider,
                 )
 

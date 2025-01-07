@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.5.2] - 2025-01-07
+
+### Breaking Changes
+- Drops support for Python 3.8 (#17).
+- Require latest versions of Harlequin `>=1.25.2`, databricks-sql-connector `>=3.7.0` and
+databricks-sdk `>=0.40.0` (optional extra), and avoid upper version bounds on requirements to avoid
+dependency hell (more here: https://github.com/databricks/databricks-sql-python/pull/452 &
+https://github.com/tconbeer/harlequin/pull/714/commits/a50dfacd17e6626002c21e3c3bfd7e80203a0ea8#diff-50c86b7ed8ac2cf95bd48334961bf0530cdc77b5a56f852c5c61b89d735fd711R64)
+(#17).
+
+### Code Quality
+- Reduce unused mypy ignores (#17).
+
 ## [0.5.1] - 2024-09-21
 
 ### Bug Fixes
@@ -92,7 +105,9 @@ is the one written with hyphens not underscores.
 
 -   Adds a Databricks adapter for SQL warehouses and DBR interactive clusters.
 
-[Unreleased]: https://github.com/alexmalins/harlequin-databricks/compare/0.5.1...HEAD
+[Unreleased]: https://github.com/alexmalins/harlequin-databricks/compare/0.5.2...HEAD
+
+[0.5.2]: https://github.com/alexmalins/harlequin-databricks/compare/0.5.1...0.5.2
 
 [0.5.1]: https://github.com/alexmalins/harlequin-databricks/compare/0.5.0...0.5.1
 

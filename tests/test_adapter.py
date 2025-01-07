@@ -2,8 +2,8 @@ import os
 import sys
 from typing import Iterator
 
-import databricks  # type:ignore
 import pytest
+from databricks import sql as databricks_sql
 from harlequin.adapter import HarlequinAdapter, HarlequinConnection, HarlequinCursor
 from harlequin.catalog import Catalog, CatalogItem
 from harlequin.exception import HarlequinConnectionError, HarlequinQueryError
@@ -24,7 +24,7 @@ def test_plugin_discovery() -> None:
     PLUGIN_NAME = "databricks"
     eps = entry_points(group="harlequin.adapter")
     assert eps[PLUGIN_NAME]
-    adapter_cls = eps[PLUGIN_NAME].load()  # type:ignore
+    adapter_cls = eps[PLUGIN_NAME].load()
     assert issubclass(adapter_cls, HarlequinAdapter)
     assert adapter_cls == HarlequinDatabricksAdapter
 
@@ -125,5 +125,5 @@ def test_execute_raises_query_error(connection: HarlequinDatabricksConnection) -
 
 def test_close(connection: HarlequinDatabricksConnection) -> None:
     connection.close()
-    with pytest.raises(databricks.sql.exc.Error):
+    with pytest.raises(databricks_sql.exc.Error):
         connection.conn.cursor()  # cannot open a Cursor from a closed Databricks connection

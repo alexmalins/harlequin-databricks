@@ -14,7 +14,7 @@ jobs:
     strategy:
       matrix:
         os: ['ubuntu-latest', 'macos-latest']
-        python-version: ['3.8', '3.12']
+        python-version: ['3.9', '3.12']
     defaults:
       run:
         shell: bash
@@ -54,8 +54,8 @@ jobs:
       - name: Check types with mypy
         run: |
           source $VENV
-          mypy .
-        if: ${{ matrix.python-version == '3.8' }}
+          mypy . --strict
+        if: ${{ matrix.python-version == '3.9' }}
       - name: Check types with mypy
         run: |
           source $VENV
