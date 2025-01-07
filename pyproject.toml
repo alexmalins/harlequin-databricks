@@ -52,7 +52,7 @@ requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.ruff]
-select = ["A", "B", "E", "F", "I"]
+lint.select = ["A", "B", "E", "F", "I"]
 target-version = "py39"
 
 [tool.ruff.lint.pycodestyle]
