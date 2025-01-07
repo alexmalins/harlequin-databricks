@@ -7,6 +7,9 @@ All notable changes to this project will be documented in this file.
 ### Breaking Changes
 - Drops support for Python 3.8 (#17). 
 
+### Code Quality
+- Reduce unused mypy ignores (#17).
+
 ## [0.5.1] - 2024-09-21
 
 ### Bug Fixes
