@@ -1,4 +1,6 @@
 Name,Function,Description
+'nullifzero,'nullifzero(expr)',"Returns expr if it is not zero, or NULL otherwise."
+'zeroifnull,'zeroifnull(expr)',"Returns expr if it is not NULL, or 0 otherwise."
 abs,abs(expr),Returns the absolute value of the numeric value in expr.
 acos,acos(expr),Returns the inverse cosine (arccosine) of expr.
 acosh,acosh(expr),Returns the inverse hyperbolic cosine of expr.
@@ -85,6 +87,8 @@ charindex,"charindex(substr, str[, pos])",Returns the position of the first occu
 chr,chr(expr),Returns the character at the supplied UTF-16 code point.
 cloud_files_state,cloud_files_state( { TABLE(table) | checkpoint } ),Returns the file-level state of an autoloader cloud_files source.
 coalesce,"coalesce(expr1, expr2 [, …])",Returns the first non-null argument.
+collation [for] ,collation [for] (strExpr),Returns the collation attached to strExpr.
+collations,collations(),Returns the list of available collations.
 collect_list,collect_list(expr),Returns an array consisting of all values in expr within the group.
 collect_set,collect_set(expr),Returns an array consisting of all unique values in expr within the group.
 concat,"concat(expr1, expr2[, …])",Returns the concatenation of the arguments.
@@ -127,6 +131,7 @@ date_trunc,"date_trunc(unit,expr)",Returns timestamp truncated to the unit speci
 dateadd,"dateadd(startDate,numDays)",Returns the date numDays after startDate.
 datediff,"datediff(endDate,startDate)",Returns the number of days from startDate to endDate.
 day,day(expr),Returns the day of month of the date or timestamp.
+dayname,dayname(expr),Returns the three-letter english acronym for the day of the week for the given date.
 dayofmonth,dayofmonth(expr),Returns the day of month of the date or timestamp.
 dayofweek,dayofweek(expr),Returns the day of week of the date or timestamp.
 dayofyear,dayofyear(expr),Returns the day of year of the date or timestamp.
@@ -141,7 +146,7 @@ elt,"elt(index, expr1 [, …] )",Returns the nth expression.
 encode,"encode(expr, charSet)",Returns the binary representation of a string using the charSet character encoding.
 endswith,"endswith(expr, endExpr)",Returns true if expr STRING or BINARY ends with endExpr.
 equal_null,"equal_null(expr1, expr2)","Returns true if expr1 equals expr2 or both expressions are NULL, or false otherwise."
-event_log,event_log( { TABLE(table) | pipeline_id } ),"Returns a table of the refresh history for a materialized view, streaming table, or DLT pipeline."
+event_log,event_log( { TABLE(table) | pipeline_id } ),"Returns a table of the refresh history for a materialized view, streaming table, or pipeline."
 every,every(expr),Returns true if all values of expr in the group are true.
 exists,"exists(expr, pred)",Returns true if pred is true for any element in expr.
 exp,exp(expr),Returns e to the power of expr.
@@ -160,10 +165,11 @@ floor,"floor(expr[,targetScale])",Returns the largest number not smaller than ex
 forall,"forall(expr, predFunc)",Tests whether predFunc holds for all elements in the array.
 format_number,"format_number(expr, scale)","Formats expr like #,###,###.##, rounded to scale decimal places."
 format_string,"format_string(strfmt[, obj1 [, …]])",Returns a formatted string from printf-style format strings.
+from_avro,"from_avro(avroBin, jsonSchema[, options])",Returns a struct value based on avroBin and jsonSchema.
 from_csv,"from_csv(csvStr, schema[, options])",Returns a struct value with the csvStr and schema.
 from_json,"from_json(jsonStr, schema[, options])",Returns a struct value with the jsonStr and schema.
 from_unixtime,"from_unixtime(unixTime,fmt)",Returns unixTime in fmt.
-from_utc_timestamp,"from_utc_timestamp(expr,timezone)",Returns a timestamp in expr specified in UTC in the timezone timeZone.
+from_utc_timestamp,"from_utc_timestamp(expr,timezone)",Returns the timestamp at UTC for a timestamp expr at timeZone.
 from_xml,"from_xml(xmlStr, schema[, options])",Returns a struct value parsed from the xmlStr using schema.
 get,"get(arrayExpr, index)","Returns the element of an arrayExpr at index, starting at 0."
 get_json_object,"get_json_object(expr, path)",Extracts a JSON object from path.
@@ -180,13 +186,14 @@ hll_sketch_estimate,hll_sketch_estimate(expr),Estimates number of distinct value
 hll_union,"hll_union(expr1, expr2 [,allowDifferentLgConfigK])",Combines two HyperLogLog sketches.
 hll_union_agg,"hll_union_agg(expr[,allowDifferentLgConfigK])",Aggregates HyperLogLog sketches for a group of rows.
 hour,hour(expr),Returns the hour component of a timestamp.
+http_request,"http_request({parm => expr} [, …])",Makes an HTTP request using a defined HTTP connection.
 hypot,"hypot(expr1, expr2)",Returns sqrt(expr1 * expr1 + expr2 * expr2).
 if,"if(cond, expr1, expr2)","Returns expr1 if cond is true, or expr2 otherwise."
 iff,"iff(cond, expr1, expr2)","Returns expr1 if cond is true, or expr2 otherwise."
 ifnull,"ifnull(expr1, expr2)","Returns expr2 if expr1 is NULL, or expr1 otherwise."
 initcap,initcap(expr),Returns expr with the first letter of each word in uppercase.
-inline,inline(expr),Explodes an array of structs into a table.
-inline_outer,inline_outer(expr),Explodes an array of structs into a table with outer semantics.
+inline,inline(input),Explodes an array of structs into a table.
+inline_outer,inline_outer(input),Explodes an array of structs into a table with outer semantics.
 input_file_block_length,input_file_block_length(),Returns the length in bytes of the block being read.
 input_file_block_start,input_file_block_start(),Returns the start offset in bytes of the block being read.
 input_file_name,input_file_name(),"Returns the name of the file being read, or empty string if not available."
@@ -215,6 +222,7 @@ len,len(expr),Returns the character length of string data or number of bytes of 
 length,length(expr),Returns the character length of string data or number of bytes of binary data.
 levenshtein,"levenshtein(str1, str2)",Returns the Levenshtein distance between the strings str1 and str2.
 list_secrets,list_secrets([scopeStr]),Returns the keys in all or one scope which the user is authorized to see from Databricks secret service.
+listagg,"listagg(expr[,delim]) [WITHIN GROUP (ORDER BY key [,...])]","Returns a concatenated STRING or BINARY of all values in expr within the group, separated by delim."
 ln,ln(expr),Returns the natural logarithm (base e) of expr.
 locate,"locate(substr, str[, pos])",Returns the position of the first occurrence of substr in str after position pos.
 log,"log([base,] expr)",Returns the logarithm of expr with base.
@@ -245,6 +253,7 @@ max,max(expr),Returns the maximum value of expr in a group.
 max_by,"max_by(expr1,expr2)",Returns the value of an expr1 associated with the maximum value of expr2 in a group.
 md5,md5(expr),Returns an MD5 128-bit checksum of expr as a hex string.
 mean,mean(expr),Returns the mean calculated from values of a group.
+measure,measure(measure_column),Returns the measure of a metric view calculated from values of a group.
 median,median(expr),Returns the median calculated from values of a group.
 min,min(expr),Returns the minimum value of expr in a group.
 min_by,"min_by(expr1, expr2)",Returns the value of an expr1 associated with the minimum value of expr2 in a group.
@@ -255,7 +264,7 @@ monotonically_increasing_id,monotonically_increasing_id(),Returns monotonically 
 month,month(expr),Returns the month component of the timestamp in expr.
 months_between,"months_between(expr1,expr2[,roundOff])",Returns the number of months elapsed between dates or timestamps in expr1 and expr2.
 named_struct,"named_struct({name1, val1} [, …])",Creates a struct with the specified field names and values.
-nanvl,"nanvl(expr1, expr2)","Returns expr1 if it’s not NaN, or expr2 otherwise."
+nanvl,"nanvl(expr1, expr2)","Returns expr1 if it's not NaN, or expr2 otherwise."
 negative,negative(expr),Returns the negated value of expr.
 next_day,"next_day(expr,dayOfWeek)",Returns the first date which is later than expr and named as in dayOfWeek.
 now,now(),Returns the current timestamp at the start of query evaluation.
@@ -275,8 +284,8 @@ percentile_cont,percentile_cont(pct) WITHIN GROUP (ORDER BY key),Returns the int
 percentile_disc,percentile_disc(pct) WITHIN GROUP (ORDER BY key),Returns the discrete percentile of the key within the group.
 pi,pi(),Returns pi.
 pmod,"pmod(dividend, divisor)",Returns the positive remainder after dividend / divisor.
-posexplode,posexplode(expr),Returns rows by un-nesting the array with numbering of positions.
-posexplode_outer,posexplode_outer(expr),Returns rows by un-nesting the array with numbering of positions using OUTER semantics.
+posexplode,posexplode(collection),Returns rows by un-nesting the array with numbering of positions.
+posexplode_outer,posexplode_outer(collection),Returns rows by un-nesting the array with numbering of positions using OUTER semantics.
 position,"position(substr, str[, pos])",Returns the position of the first occurrence of substr in str after position pos.
 positive,positive(expr),Returns the value of expr.
 pow,"pow(expr1, expr2)",Raises expr1 to the power of expr2.
@@ -288,6 +297,7 @@ raise_error,raise_error(expr),Throws an exception with expr as the message.
 rand,rand([seed]),Returns a random value between 0 and 1.
 randn,randn([seed]),Returns a random value from a standard normal distribution.
 random,random([seed]),Returns a random value between 0 and 1.
+randstr,randstr(length),Returns a random string of length alpha-numeric characters.
 range,range(end),Returns a table of values within a specified range.
 rank,rank(),Returns the rank of a value compared to all values in the partition.
 read_files,"read_files(path, [optionKey => optionValue] [, …])",Reads data files on cloud storage and returns it in tabular format.
@@ -370,6 +380,7 @@ str ilike ,str ilike (pattern[ESCAPE escape]),Returns true if str matches patter
 str like ,str like (pattern[ESCAPE escape]),Returns true if str matches pattern with escape.
 str_to_map,"str_to_map(expr[,pairDelim[,keyValueDelim]])",Returns a map after splitting expr into key-value pairs using delimiters.
 string,string(expr),Casts the value expr to STRING.
+string_agg,"string_agg(expr[,delim]) [WITHIN GROUP (ORDER BY key [,...])]","Returns a concatenated STRING or BINARY of all values in expr within the group, separated by delim."
 struct,"struct(expr1 [, …])",Creates a STRUCT with the specified field values.
 substr,"substr(expr, pos[, len])",Returns the substring of expr that starts at pos and is of length len.
 substring,"substring(expr, pos[, len])",Returns the substring of expr that starts at pos and is of length len.
@@ -386,6 +397,7 @@ timestamp_seconds,timestamp_seconds(expr),Creates timestamp expr seconds since U
 timestampadd,"timestampadd(unit, value, expr)",Adds value units to a timestamp expr.
 timestampdiff,"timestampdiff(unit, start, stop)",Returns the difference between two timestamps measured in units.
 tinyint,tinyint(expr),Casts expr to TINYINT.
+to_avro,"to_avro(expr[, options])",Returns an Avro binary value with the specified struct value.
 to_binary,"to_binary(expr[, fmt])",Returns expr cast to a Binary based on fmt.
 to_char,"to_char(numExpr, fmt)",Returns numExpr cast to STRING using formatting fmt.”
 to_csv,"to_csv(expr[, options])",Returns a CSV string with the specified struct value.
@@ -394,7 +406,7 @@ to_json,"to_json(expr[, options])",Returns a JSON string with the STRUCT or VARI
 to_number,"to_number(expr, fmt )",Returns expr cast to DECIMAL using formatting fmt.
 to_timestamp,"to_timestamp(expr[,fmt])",Returns expr cast to a timestamp using an optional formatting.
 to_unix_timestamp,"to_unix_timestamp(expr[,fmt])",Returns the timestamp in expr as a UNIX timestamp.
-to_utc_timestamp,"to_utc_timestamp(expr,timezone)",Returns the timestamp in expr in a different timezone as UTC.
+to_utc_timestamp,"to_utc_timestamp(expr,timezone)",Returns the timestamp at UTC for a timestamp expr at timezone.
 to_varchar,"to_varchar(numExpr, fmt)",Returns numExpr cast to STRING using formatting fmt.”
 transform,"transform(expr, func)",Transforms elements in an array in expr using the function func.
 transform_keys,"transform_keys(expr, func)",Transforms keys in a map in expr using the function func.
@@ -425,6 +437,7 @@ typeof,typeof(expr),Return a DDL-formatted type string for the data type of expr
 ucase,ucase(expr),Returns expr with all characters changed to uppercase.
 unbase64,unbase64(expr),Returns a decoded base64 string as binary.
 unhex,unhex(expr),Converts hexadecimal expr to BINARY.
+uniform,"uniform(expr1, expr2 [,seed])",Returns a random value with independent and identically distributed values within the specified range of numbers.
 unix_date,unix_date(expr),Returns the number of days since 1970-01-01.
 unix_micros,unix_micros(expr),Returns the number of microseconds since 1970-01-01 00:00:00 UTC.
 unix_millis,unix_millis(expr),Returns the number of milliseconds since 1970-01-01 00:00:00 UTC.
@@ -438,8 +451,8 @@ uuid,uuid(),Returns an universally unique identifier (UUID) string.
 var_pop,var_pop(expr),Returns the population variance calculated from values of a group.
 var_samp,var_samp(expr),Returns the sample variance calculated from values of a group.
 variance,variance(expr),Returns the sample variance calculated from values of a group.
-variant_explode,variant_explode(variantExpr),Returns a set of rows by un-nesting variantExpr.
-variant_explode_outer,variant_explode_outer(variantExpr),Returns a set of rows by un-nesting variantExpr using outer semantics.
+variant_explode,variant_explode(input),Returns a set of rows by un-nesting input.
+variant_explode_outer,variant_explode_outer(input),Returns a set of rows by un-nesting input using outer semantics.
 variant_get,"variant_get(variantExpr,path,type)","Extracts a value of type type from variantExpr, specified by path."
 vector_search,"vector_search(index, query, num_results)",Query a Mosaic AI Vector Search index using SQL.
 version,version(),Returns the Apache Spark version.

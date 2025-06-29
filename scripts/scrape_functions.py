@@ -2,8 +2,9 @@ from pathlib import Path
 
 import pandas as pd
 
-# Last run with Databricks's SQL functions page updated on August 2, 2024. This is archived at:
-# https://web.archive.org/web/20240804040816/https://docs.databricks.com/en/sql/language-manual/sql-ref-functions-builtin.html
+# Scrape Databricks's SQL functions page ver Apr 26, 2025 for function names. This page is archived
+# at:
+# https://web.archive.org/web/20250629134842/https://docs.databricks.com/aws/en/sql/language-manual/sql-ref-functions-builtin
 URL = (
     "https://docs.databricks.com/en/sql/language-manual/sql-ref-functions-builtin.html"
 )
