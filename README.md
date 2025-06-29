@@ -13,53 +13,33 @@ warehouses or Databricks Runtime (DBR) interactive clusters.
 
 <img src="img/harlequin_databricks.jpg" alt="harlequin-databricks" width="945">
 
+
 ## Installation
 
-`harlequin-databricks` depends on `harlequin`, so installing this package will also install Harlequin.
+`harlequin-databricks` depends on `harlequin`, so installing this package using any of the methods
+below will also install `harlequin`.
 
-### Using pip
+### Using uv
 
-To install this adapter into an activated virtual environment:
+The recommended way to install `harlequin-databricks` is using `uv`:
+
+```bash
+uv tool install harlequin-databricks
+```
+
+This command will install `harlequin-databricks` into an isolated environment and add it to your
+PATH so you can easily run the executable.
+
+### Alternative installation methods
+
+Alternatively, if you know what you're doing, after installing Python 3.9 or above, install
+`harlequin-databricks` using pip, pipx, poetry, or any other program that can install Python
+packages from PyPI. For example:
 
 ```bash
 pip install harlequin-databricks
 ```
 
-### Using poetry
-
-```bash
-poetry add harlequin-databricks
-```
-
-### Using pipx
-
-If you do not already have Harlequin installed:
-
-```bash
-pipx install harlequin-databricks
-```
-
-If you would like to add the Databricks adapter to an existing Harlequin installation:
-
-```bash
-pipx inject harlequin harlequin-databricks
-```
-
-### As an Extra
-
-Alternatively, you can install Harlequin with the `databricks` extra:
-
-```bash
-pip install harlequin[databricks]
-```
-
-```bash
-poetry add harlequin[databricks]
-```
-
-```bash
-pipx install harlequin[databricks]
-```
 
 ## Connecting to Databricks
 
@@ -106,6 +86,7 @@ you need to `pip install databricks-sdk` as an additional dependency
 harlequin -a databricks --server-hostname ***.cloud.databricks.com --http-path /sql/1.0/endpoints/*** --client-id *** --client-secret ***
 ```
 
+
 ## Store an alias for your connection string
 
 We recommend you include an alias for your connection string in your `.bash_profile`/`.zprofile` so
@@ -117,6 +98,7 @@ Run this command
 ```bash
 echo 'alias hdb="harlequin -a databricks --server-hostname ***.cloud.databricks.com --http-path /sql/1.0/endpoints/*** --access-token dabpi***"' >> .bash_profile    
 ```
+
 
 ## Using Unity Catalog and want fast Data Catalog indexing?
 
@@ -136,6 +118,7 @@ which allows harlequin-databricks to fetch metadata for all Unity Catalog assets
 So if your Databricks instance is running Unity Catalog, and you no longer care about the legacy
 metastores, setting the `--skip-legacy-indexing` CLI flag is recommended as it will mean
 much faster indexing & refreshing of the assets in the Data Catalog pane.
+
 
 ## Initialization Scripts
 
@@ -169,6 +152,7 @@ the `--no-init` option:
 harlequin -a databricks --no-init
 ```
 
+
 ## Other CLI options:
 
 For more details on other command line options, run:
@@ -180,6 +164,7 @@ harlequin --help
 For more information, see the
 [harlequin-databricks Docs](https://harlequin.sh/docs/databricks/index).
 
+
 ## Issues, Contributions and Feature Requests
 
 Please report bugs/issues with this adapter via the GitHub
@@ -188,6 +173,7 @@ attempt fixes yourself by forking this repo then opening a [PR](https://github.c
 
 For feature suggestions, please post in the
 [discussions](https://github.com/alexmalins/harlequin-databricks/discussions).
+
 
 ## Special thanks to...
 
