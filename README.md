@@ -3,9 +3,8 @@
 [![PyPI](https://img.shields.io/pypi/v/harlequin-databricks)](https://pypi.org/project/harlequin-databricks/)
 [![Conda](https://anaconda.org/conda-forge/harlequin-databricks/badges/version.svg)](https://anaconda.org/conda-forge/harlequin-databricks)
 [![Python Version](https://img.shields.io/pypi/pyversions/harlequin-databricks)](https://pypi.org/project/harlequin-databricks/)
-[![Tests](https://github.com/alexmalins/harlequin-databricks/actions/workflows/code_quality_tests_ubuntu_masos.yml/badge.svg)](https://github.com/alexmalins/harlequin-databricks/actions/workflows/code_quality_tests_ubuntu_masos.yml)
-[![Tests on Windows](https://github.com/alexmalins/harlequin-databricks/actions/workflows/tests_windows_latest.yml/badge.svg)](https://github.com/alexmalins/harlequin-databricks/actions/workflows/tests_windows_latest.yml)
-[![Code Style: Ruff](https://img.shields.io/badge/code%20style-ruff-D7FF64)](https://github.com/alexmalins/harlequin-databricks/actions/workflows/code_quality.yml)
+[![Code Quality Checks](https://github.com/alexmalins/harlequin-databricks/actions/workflows/code_quality_checks.yml/badge.svg)](https://github.com/alexmalins/harlequin-databricks/actions/workflows/code_quality_checks.yml)
+[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 [![License: MIT](https://img.shields.io/pypi/l/harlequin-databricks)](https://github.com/alexmalins/harlequin-databricks/blob/main/LICENSE)
 [![Downloads](https://static.pepy.tech/badge/harlequin-databricks)](https://pepy.tech/project/harlequin-databricks)
 
