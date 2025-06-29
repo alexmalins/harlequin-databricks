@@ -12,7 +12,7 @@ URL = "https://docs.databricks.com/en/sql/language-manual/sql-ref-reserved-words
 
 
 def scrape_keywords() -> list[str]:
-    page = requests.get(URL)
+    page = requests.get(URL, timeout=10)
     soup = BeautifulSoup(page.content, "html.parser")
 
     results = soup.find_all(
@@ -34,11 +34,9 @@ def scrape_keywords() -> list[str]:
         ]
 
     keywords += ["LIMIT"]  # Add keywords missing from Databricks page for some reason
-    keywords = sorted(list(set(keywords)))
+    keywords = sorted(set(keywords))
     manual_remove = ["ANSI", "CURRENT_", "SQL", "SQL2016"]  # Drop these non-keywords
-    keywords = [keyword for keyword in keywords if keyword not in manual_remove]
-
-    return keywords
+    return [keyword for keyword in keywords if keyword not in manual_remove]
 
 
 def main() -> None:

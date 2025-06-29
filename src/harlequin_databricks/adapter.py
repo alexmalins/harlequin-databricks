@@ -1,27 +1,35 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any
+from typing import (
+    TYPE_CHECKING,
+    Any,
+)
 
 import pyarrow.compute as pc
 from databricks import sql as databricks_sql
-from databricks.sql.client import Cursor as DatabricksCursor
 from harlequin import (
     HarlequinAdapter,
     HarlequinConnection,
     HarlequinCursor,
 )
-from harlequin.autocomplete.completion import HarlequinCompletion
-from harlequin.catalog import Catalog, CatalogItem
+from harlequin.catalog import (
+    Catalog,
+    CatalogItem,
+)
 from harlequin.exception import (
     HarlequinConfigError,
     HarlequinConnectionError,
     HarlequinQueryError,
 )
-from textual_fastdatatable.backend import AutoBackendType
 
 from harlequin_databricks.cli_options import DATABRICKS_ADAPTER_OPTIONS
 from harlequin_databricks.completions import load_completions
+
+if TYPE_CHECKING:
+    from databricks.sql.client import Cursor as DatabricksCursor
+    from harlequin.autocomplete.completion import HarlequinCompletion
+    from textual_fastdatatable.backend import AutoBackendType
 
 
 def _fetch(
@@ -137,6 +145,7 @@ class HarlequinDatabricksConnection(HarlequinConnection):
                     Config,
                     oauth_service_principal,
                 )
+
                 if TYPE_CHECKING:
                     from databricks.sdk.credentials_provider import (
                         CredentialsProvider,
@@ -144,7 +153,7 @@ class HarlequinDatabricksConnection(HarlequinConnection):
 
                 def credentials_provider() -> CredentialsProvider | None:
                     config = Config(
-                        host=f'https://{options["server_hostname"]}',
+                        host=f"https://{options['server_hostname']}",
                         client_id=client_id,
                         client_secret=client_secret,
                     )
@@ -197,7 +206,7 @@ class HarlequinDatabricksConnection(HarlequinConnection):
     @staticmethod
     def _read_init_script(init_path: Path) -> str:
         try:
-            with open(init_path.expanduser(), "r") as f:
+            with init_path.expanduser().open("r") as f:
                 init_script = f.read()
         except OSError:
             init_script = ""
@@ -234,7 +243,8 @@ class HarlequinDatabricksConnection(HarlequinConnection):
         old_conn.close()
 
     def get_catalog(self) -> Catalog:
-        """
+        """Query Databricks asserts and store in a Harlequin Catalog (for the Data Catalog pane).
+
         If the user presses the `Cancel Query` button while this function is executing
         asynchronously, this function will return the Catalog as it stood before this function was
         called (from the `self._existing_catalog` instance variable).
@@ -351,8 +361,7 @@ class HarlequinDatabricksConnection(HarlequinConnection):
         self,
         catalog_items: list[CatalogItem],
     ) -> tuple[list[CatalogItem], list[str]] | None:
-        """It is possible to index quickly assets on Databricks instances running Unity Catalog, as
-        only two SQL queries are required to fetch all Unity Catalog assets.
+        """Index Unity Catalog assets.
 
         This method returns a list of Harlequin CatalogItems containing the Unity Catalog assets
         (only) in the Databricks instance, and a list of the names of the Unity catalogs.
@@ -360,6 +369,9 @@ class HarlequinDatabricksConnection(HarlequinConnection):
         This method does not return metadata for any legacy Hive metastore assets, as that data
         does not exist in `system.information_schema`:
         https://docs.databricks.com/en/sql/language-manual/sql-ref-information-schema.html
+
+        Only two SQL queries are required to fetch all metadata on Unity Catalog assets from the
+        information schema.
 
         If one of the SQL queries to fetch the Unity Catalog metadata fails because the user
         presses the `Cancel Query` button, this function will return None, triggering
@@ -558,5 +570,4 @@ class HarlequinDatabricksAdapter(HarlequinAdapter):
         }
 
     def connect(self) -> HarlequinDatabricksConnection:
-        conn = HarlequinDatabricksConnection(options=self.options)
-        return conn
+        return HarlequinDatabricksConnection(options=self.options)

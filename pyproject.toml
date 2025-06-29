@@ -48,11 +48,46 @@ requires = ["uv_build>=0.7.16"]
 build-backend = "uv_build"
 
 [tool.ruff]
-lint.select = ["A", "B", "E", "F", "I"]
 target-version = "py39"
+
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = [
+    "ANN401",  # Allow `Any` type hint.
+    "ARG002",  # Allow unused `**kwargs` argument, as not to break Harlequin adapter API.
+    "C901",  # Allow functions with >10 decision points.
+    "COM812",  # No need for trailing comma in functions/methods with only one argument.
+    "D100",  # No need for docstrings sometimes.
+    "D101",  # No need for docstrings sometimes.
+    "D102",  # No need for docstrings sometimes.
+    "D103",  # No need for docstrings sometimes.
+    "D104",  # No need for docstrings sometimes.
+    "D107",  # No need for docstrings sometimes.
+    "D202",  # Allow blank line after docstring.
+    "D203",  # No need for blank line before docstring.
+    "D213",  # Clashes with D212.
+    "FBT001",  # Allow boolean positional function argument, as not to break Harlequin adapter API.
+    "FBT002",  # Allow boolean positional function argument, as not to break Harlequin adapter API.
+    "PERF401",  # List `.extend()` method is not widely known.
+    "PGH003",  # Allow `#  type: ignore`.
+    "PLC0415",  # Allow in function imports.
+    "PLR0911",  # Allow functions >6 return statements.
+    "PLR0913",  # Allow >5 function arguments, as not to break Harlequin adapter API.
+    "S101",  # Allow asserts in code.
+    "UP015",  # Allow passing open mode `"r"` to `open()`, as explicit better than implicit.
+] 
 
 [tool.ruff.lint.pycodestyle]
 max-line-length = 100
+
+[tool.ruff.lint.per-file-ignores]
+"scripts/*.py" = [
+    "INP001",  # No need for `__init__.py` in scripts folder.
+]
+"tests/test_*.py" = [
+    "PLR2004",  # Allow hardcoded expected results in test asserts.
+    "INP001",  # No need for `__init__.py` in tests folder.
+]
 
 [tool.mypy]
 python_version = "3.9"

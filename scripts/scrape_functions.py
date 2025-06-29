@@ -26,9 +26,7 @@ def scrape_functions_and_descriptions() -> pd.DataFrame:
         & (combined["Function"].str.contains("\\)"))
     ].copy()
     functions_only["Name"] = functions_only["Function"].str.split("(").str[0]
-    deduped = functions_only.groupby("Name").first()
-
-    return deduped
+    return functions_only.groupby("Name").first()
 
 
 def main() -> None:
