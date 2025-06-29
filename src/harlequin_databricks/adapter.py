@@ -3,7 +3,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any
 
-import pyarrow.compute as pc  # type:ignore
+import pyarrow.compute as pc
 from databricks import sql as databricks_sql
 from databricks.sql.client import Cursor as DatabricksCursor
 from harlequin import (
@@ -137,9 +137,10 @@ class HarlequinDatabricksConnection(HarlequinConnection):
                     Config,
                     oauth_service_principal,
                 )
-                from databricks.sdk.credentials_provider import (
-                    CredentialsProvider,
-                )
+                if TYPE_CHECKING:
+                    from databricks.sdk.credentials_provider import (
+                        CredentialsProvider,
+                    )
 
                 def credentials_provider() -> CredentialsProvider | None:
                     config = Config(
