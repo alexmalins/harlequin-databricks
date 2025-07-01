@@ -4,6 +4,21 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.6.0] - 2025-07-05
+
+### Breaking Changes
+- Require `databricks-sql-connector>=4.0.4` to fix unable to index data catalog bug (#18 & #19).
+- Require `harlequin>=2.1.2` (#19).
+
+### Features
+- Recommend [uv](https://github.com/astral-sh/uv) as installation method (#19).
+- Update functions & keywords syntax highlighting lists (#19).
+
+### Code Quality
+- Use [uv](https://github.com/astral-sh/uv) for package management, build backend and CI (#19).
+- Use [ruff](https://github.com/astral-sh/ruff) for linting and code formatting (#19).
+- Drop functional tests in CI against Databricks as test Databricks instance no longer works (#19).
+
 ## [0.5.2] - 2025-01-07
 
 ### Breaking Changes
@@ -105,7 +120,9 @@ is the one written with hyphens not underscores.
 
 -   Adds a Databricks adapter for SQL warehouses and DBR interactive clusters.
 
-[Unreleased]: https://github.com/alexmalins/harlequin-databricks/compare/0.5.2...HEAD
+[Unreleased]: https://github.com/alexmalins/harlequin-databricks/compare/0.6.0...HEAD
+
+[0.6.0]: https://github.com/alexmalins/harlequin-databricks/compare/0.5.2...0.6.0
 
 [0.5.2]: https://github.com/alexmalins/harlequin-databricks/compare/0.5.1...0.5.2
 
