@@ -4,8 +4,8 @@ import requests
 from bs4 import BeautifulSoup
 
 # Databricks's SQL keywords page was last updated October 10, 2023. It is archived at:
-# https://web.archive.org/web/20240122080239/https://docs.databricks.com/en/sql/language-manual/sql-ref-reserved-words.html
-URL = "https://docs.databricks.com/en/sql/language-manual/sql-ref-reserved-words.html"
+# https://web.archive.org/web/20250705123402/https://docs.databricks.com/aws/en/sql/language-manual/sql-ref-reserved-words
+URL = "https://docs.databricks.com/en/sql/language-manual/sql-ref-reserved-words"
 
 # Add keyword missing from Databricks page for some reason
 MANUAL_ADD = ["LIMIT"]

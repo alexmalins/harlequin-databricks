@@ -24,11 +24,11 @@ below will also install `harlequin`.
 The recommended way to install `harlequin-databricks` is using `uv`:
 
 ```bash
-uv tool install harlequin-databricks
+uv tool install harlequin --with harlequin-databricks
 ```
 
-This command will install `harlequin-databricks` into an isolated environment and add it to your
-PATH so you can easily run the executable.
+This command will install `harlequin` with the databricks adapter into an isolated environment and
+add it to your PATH so you can easily run the executable.
 
 ### Alternative installation methods
 
