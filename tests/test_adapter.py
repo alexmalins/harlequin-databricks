@@ -1,6 +1,6 @@
 import os
 import sys
-from typing import Iterator
+from collections.abc import Iterator
 
 import pytest
 from databricks import sql as databricks_sql
@@ -21,10 +21,10 @@ else:
 
 
 def test_plugin_discovery() -> None:
-    PLUGIN_NAME = "databricks"
+    plugin_name = "databricks"
     eps = entry_points(group="harlequin.adapter")
-    assert eps[PLUGIN_NAME]
-    adapter_cls = eps[PLUGIN_NAME].load()
+    assert eps[plugin_name]
+    adapter_cls = eps[plugin_name].load()
     assert issubclass(adapter_cls, HarlequinAdapter)
     assert adapter_cls == HarlequinDatabricksAdapter
 
@@ -80,11 +80,6 @@ def test_get_unity_catalog(connection: HarlequinDatabricksConnection) -> None:
     assert isinstance(catalog, Catalog)
     assert catalog.items
     assert isinstance(catalog.items[0], CatalogItem)
-
-
-# def test_execute_ddl(connection: HarlequinDatabricksConnection) -> None:
-#    cur = connection.execute("create table foo (a int)")
-#    assert cur is None
 
 
 def test_execute_select(connection: HarlequinDatabricksConnection) -> None:

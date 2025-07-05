@@ -1,6 +1,3 @@
-from __future__ import annotations
-
-import csv
 from pathlib import Path
 
 import requests
@@ -10,20 +7,31 @@ from bs4 import BeautifulSoup
 # https://web.archive.org/web/20240122080239/https://docs.databricks.com/en/sql/language-manual/sql-ref-reserved-words.html
 URL = "https://docs.databricks.com/en/sql/language-manual/sql-ref-reserved-words.html"
 
+# Add keyword missing from Databricks page for some reason
+MANUAL_ADD = ["LIMIT"]
+
+# Drop these non-keywords that are scraped from the page
+MANUAL_REMOVE = [
+    "'ANTI'>",
+    "(NULL",
+    "(SELECT",
+    "(VALUES",
+    "ANSI",
+    "CURRENT_",
+    "DEFAULT)",
+    "NULL>",
+    "SQL",
+    "SQL--",
+    "SQL2016",
+    "VALUES(1)",
+]
+
 
 def scrape_keywords() -> list[str]:
-    page = requests.get(URL)
+    page = requests.get(URL, timeout=10)
     soup = BeautifulSoup(page.content, "html.parser")
 
-    results = soup.find_all(
-        id=[  # These id tag sections of page contain all keywords
-            "reserved-words",
-            "special-words-in-expressions",
-            "reserved-catalog-names",
-            "reserved-schema-names",
-            "ansi-reserved-words",
-        ]
-    )
+    results = soup.find_all("div", class_="theme-doc-markdown markdown")
 
     keywords = []
     for result in results:
@@ -33,12 +41,9 @@ def scrape_keywords() -> list[str]:
             if keyword.isupper() and len(keyword) > 1 and "`" not in keyword
         ]
 
-    keywords += ["LIMIT"]  # Add keywords missing from Databricks page for some reason
-    keywords = sorted(list(set(keywords)))
-    manual_remove = ["ANSI", "CURRENT_", "SQL", "SQL2016"]  # Drop these non-keywords
-    keywords = [keyword for keyword in keywords if keyword not in manual_remove]
-
-    return keywords
+    keywords += MANUAL_ADD  # Add keywords missing from Databricks page for some reason
+    keywords = sorted(set(keywords))
+    return [keyword for keyword in keywords if keyword not in MANUAL_REMOVE]
 
 
 def main() -> None:
@@ -48,8 +53,7 @@ def main() -> None:
     # creating it if it doesn't exist
     path = Path(__file__).parents[1] / "src" / "harlequin_databricks" / "keywords.csv"
     with path.open("w+", encoding="utf-8") as file:
-        writer = csv.writer(file, delimiter="\n")
-        writer.writerow(keywords)
+        file.write("\n".join(keywords))
 
 
 if __name__ == "__main__":

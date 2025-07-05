@@ -1,0 +1,42 @@
+name: Code quality checks
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    - cron: "0 12 * * 1"  # every Monday at 12:00 UTC
+  workflow_dispatch:
+
+jobs:
+  code_quality_checks:
+    strategy:
+      matrix:
+        os: ['ubuntu-latest']
+        python-version: ['3.9', '3.13']
+    defaults:
+      run:
+        shell: bash
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+
+    steps:
+      - name: Check out code repository
+        uses: actions/checkout@v4
+
+      - name: Install uv and set the python version
+        uses: astral-sh/setup-uv@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install the project
+        run: uv sync --locked --all-extras --dev
+
+      - name: Lint & format with ruff
+        run: |
+          uv run ruff check .
+          uv run ruff format --check .
+
+      - name: Check types with mypy
+        run: uv run mypy . --strict
