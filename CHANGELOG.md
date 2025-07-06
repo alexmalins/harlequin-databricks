@@ -4,17 +4,32 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.6.1] - 2025-07-06
+
+
+### Features
+
+- Relax `harlequin` version to `>=2.0.4` to allow conda-forge builds again (#21).
+
+### Code Quality
+
+- Add classifiers and keywords to `pyproject.toml` (#20).
+- Update URLs for Databricks SQL keywords (#20).
+
 ## [0.6.0] - 2025-07-05
 
 ### Breaking Changes
+
 - Require `databricks-sql-connector>=4.0.4` to fix unable to index data catalog bug (#18 & #19).
 - Require `harlequin>=2.1.2` (#19).
 
 ### Features
+
 - Recommend [uv](https://github.com/astral-sh/uv) as installation method (#19).
 - Update functions & keywords syntax highlighting lists (#19).
 
 ### Code Quality
+
 - Use [uv](https://github.com/astral-sh/uv) for package management, build backend and CI (#19).
 - Use [ruff](https://github.com/astral-sh/ruff) for linting and code formatting (#19).
 - Drop functional tests in CI against Databricks as test Databricks instance no longer works (#19).
@@ -22,6 +37,7 @@ All notable changes to this project will be documented in this file.
 ## [0.5.2] - 2025-01-07
 
 ### Breaking Changes
+
 - Drops support for Python 3.8 (#17).
 - Require latest versions of Harlequin `>=1.25.2`, databricks-sql-connector `>=3.7.0` and
 databricks-sdk `>=0.40.0` (optional extra), and avoid upper version bounds on requirements to avoid
@@ -30,6 +46,7 @@ https://github.com/tconbeer/harlequin/pull/714/commits/a50dfacd17e6626002c21e3c3
 (#17).
 
 ### Code Quality
+
 - Reduce unused mypy ignores (#17).
 
 ## [0.5.1] - 2024-09-21
@@ -120,7 +137,9 @@ is the one written with hyphens not underscores.
 
 -   Adds a Databricks adapter for SQL warehouses and DBR interactive clusters.
 
-[Unreleased]: https://github.com/alexmalins/harlequin-databricks/compare/0.6.0...HEAD
+[Unreleased]: https://github.com/alexmalins/harlequin-databricks/compare/0.6.1...HEAD
+
+[0.6.1]: https://github.com/alexmalins/harlequin-databricks/compare/0.6.0...0.6.1
 
 [0.6.0]: https://github.com/alexmalins/harlequin-databricks/compare/0.5.2...0.6.0
 
