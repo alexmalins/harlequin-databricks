@@ -1,6 +1,6 @@
 [project]
 name = "harlequin-databricks"
-version = "0.6.0"
+version = "0.6.1"
 description = "A Harlequin adapter for Databricks."
 authors = [
     { name = "Alex Malins", email = "github@alexmalinsREMOVETHIS.com" },
@@ -9,10 +9,6 @@ authors = [
 requires-python = ">=3.9,<3.14.0"
 readme = "README.md"
 license = "MIT"
-dependencies = [
-    "harlequin>=2.1.2",
-    "databricks-sql-connector>=4.0.4",
-]
 classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Developers",
@@ -43,6 +39,10 @@ keywords = [
     "database",
     "data warehouse",
     "data lake",
+]
+dependencies = [
+    "databricks-sql-connector>=4.0.4",
+    "harlequin>=2.0.4",
 ]
 
 [project.optional-dependencies]
