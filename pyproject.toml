@@ -1,6 +1,6 @@
 [project]
 name = "harlequin-databricks"
-version = "0.6.1"
+version = "0.6.2"
 description = "A Harlequin adapter for Databricks."
 authors = [
     { name = "Alex Malins", email = "github@alexmalinsREMOVETHIS.com" },
@@ -9,6 +9,7 @@ authors = [
 requires-python = ">=3.9,<3.14.0"
 readme = "README.md"
 license = "MIT"
+license-files = ["LICENSE"]
 classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Developers",
