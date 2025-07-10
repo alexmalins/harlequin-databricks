@@ -4,8 +4,15 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
-## [0.6.1] - 2025-07-06
 
+## [0.6.2] - 2025-07-10
+
+### Bug Fixes
+
+- Ensure LICENSE file gets packaged in distribution - this is needed for the conda-forge feedstock
+(cf. https://github.com/conda-forge/harlequin-databricks-feedstock/pull/13) (#22).
+
+## [0.6.1] - 2025-07-06
 
 ### Features
 
@@ -137,7 +144,9 @@ is the one written with hyphens not underscores.
 
 -   Adds a Databricks adapter for SQL warehouses and DBR interactive clusters.
 
-[Unreleased]: https://github.com/alexmalins/harlequin-databricks/compare/0.6.1...HEAD
+[Unreleased]: https://github.com/alexmalins/harlequin-databricks/compare/0.6.2...HEAD
+
+[0.6.2]: https://github.com/alexmalins/harlequin-databricks/compare/0.6.1...0.6.2
 
 [0.6.1]: https://github.com/alexmalins/harlequin-databricks/compare/0.6.0...0.6.1
 
