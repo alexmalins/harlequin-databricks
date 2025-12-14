@@ -1,6 +1,6 @@
 [project]
 name = "harlequin-databricks"
-version = "0.6.2"
+version = "0.6.3"
 description = "A Harlequin adapter for Databricks."
 authors = [
     { name = "Alex Malins", email = "github@alexmalinsREMOVETHIS.com" },
@@ -120,7 +120,7 @@ max-line-length = 100
 ]
 
 [tool.mypy]
-python_version = "3.9"
+python_version = "3.10"
 disable_error_code = "unused-ignore"
 ignore_missing_imports = true
 pretty = true
