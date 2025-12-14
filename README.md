@@ -32,7 +32,7 @@ add it to your PATH so you can easily run the executable.
 
 ### Alternative installation methods
 
-Alternatively, if you know what you're doing, after installing Python 3.9 or above, install
+Alternatively, if you know what you're doing, after installing Python 3.10 or above, install
 `harlequin-databricks` using pip, pipx, poetry, or any other program that can install Python
 packages from PyPI. For example:
 
