@@ -65,6 +65,7 @@ bit_length,bit_length(expr),Returns the bit length of string data or number of b
 bit_or,bit_or(expr),Returns the bitwise OR of all input values in the group.
 bit_reverse,bit_reverse(expr),Returns the value obtained by reversing the order of the bits in the argument.
 bit_xor,bit_xor(expr),Returns the bitwise XOR of all input values in the group.
+bitmap_and_agg,bitmap_and_agg(expr),Returns the bitwise AND of all BINARY input values in the group.
 bitmap_bit_position,bitmap_bit_position(expr),Returns the 0-based bit position of a given BIGINT number within a bucket.
 bitmap_bucket_number,bitmap_bucket_number(expr),Returns the bitmap bucket number for a given BIGINT number.
 bitmap_construct_agg,bitmap_construct_agg(expr),Returns the bitwise OR of all bit position values in the group. between 0 and 32767 in a group as a BINARY.
@@ -209,6 +210,24 @@ java_method,"java_method(class, method[, arg1 [, …]])",Calls a method with ref
 json_array_length,json_array_length(jsonArray),Returns the number of elements in the outermost JSON array.
 json_object_keys,json_object_keys(jsonObject),Returns all the keys of the outermost JSON object as an array.
 json_tuple,"json_tuple(jsonStr, path1 [, …])",Returns multiple JSON objects as a tuple.
+kll_sketch_agg_bigint,"kll_sketch_agg_bigint(expr[, k])",Returns a KLL sketch for approximating the distribution of integer values in a group.
+kll_sketch_agg_double,"kll_sketch_agg_double(expr[, k])",Returns a KLL sketch for approximating the distribution of double values in a group.
+kll_sketch_agg_float,"kll_sketch_agg_float(expr[, k])",Returns a KLL sketch for approximating the distribution of float values in a group.
+kll_sketch_get_n_bigint,kll_sketch_get_n_bigint(sketch),Returns the number of items in an integer KLL sketch.
+kll_sketch_get_n_double,kll_sketch_get_n_double(sketch),Returns the number of items in a double KLL sketch.
+kll_sketch_get_n_float,kll_sketch_get_n_float(sketch),Returns the number of items in a float KLL sketch.
+kll_sketch_get_quantile_bigint,"kll_sketch_get_quantile_bigint(sketch, rank)",Estimates the value at a given quantile rank from an integer KLL sketch.
+kll_sketch_get_quantile_double,"kll_sketch_get_quantile_double(sketch, rank)",Estimates the value at a given quantile rank from a double KLL sketch.
+kll_sketch_get_quantile_float,"kll_sketch_get_quantile_float(sketch, rank)",Estimates the value at a given quantile rank from a float KLL sketch.
+kll_sketch_get_rank_bigint,"kll_sketch_get_rank_bigint(sketch, value)",Estimates the normalized rank of a value in an integer KLL sketch.
+kll_sketch_get_rank_double,"kll_sketch_get_rank_double(sketch, value)",Estimates the normalized rank of a value in a double KLL sketch.
+kll_sketch_get_rank_float,"kll_sketch_get_rank_float(sketch, value)",Estimates the normalized rank of a value in a float KLL sketch.
+kll_sketch_merge_bigint,"kll_sketch_merge_bigint(sketch1, sketch2)",Merges two compatible integer KLL sketches.
+kll_sketch_merge_double,"kll_sketch_merge_double(sketch1, sketch2)",Merges two compatible double KLL sketches.
+kll_sketch_merge_float,"kll_sketch_merge_float(sketch1, sketch2)",Merges two compatible float KLL sketches.
+kll_sketch_to_string_bigint,kll_sketch_to_string_bigint(sketch),Returns a human-readable string representation of an integer KLL sketch.
+kll_sketch_to_string_double,kll_sketch_to_string_double(sketch),Returns a human-readable string representation of a double KLL sketch.
+kll_sketch_to_string_float,kll_sketch_to_string_float(sketch),Returns a human-readable string representation of a float KLL sketch.
 kurtosis,kurtosis(expr),Returns the kurtosis value calculated from values of a group.
 lag,"lag(expr[,offset[,default]])",Returns the value of expr from a preceding row within the partition.
 last,"last(expr[,ignoreNull])",Returns the last value of expr for the group of rows.
@@ -324,6 +343,7 @@ regr_slope,"regr_slope(yExpr, xExpr)","Returns the slope of the linear regressio
 regr_sxx,"regr_sxx(yExpr, xExpr)",Returns the sum of squares of the xExpr values of a group where xExpr and yExpr are NOT NULL.
 regr_sxy,"regr_sxy(yExpr, xExpr)",Returns the sum of products of yExpr and xExpr calculated from values of a group where xExpr and yExpr are NOT NULL.
 regr_syy,"regr_syy(yExpr, xExpr)",Returns the sum of squares of the yExpr values of a group where xExpr and yExpr are NOT NULL.
+remote_query,"remote_query(connectionName [, connectorOptionKey => connectorOptionValue] […])",Returns the tabular result of the query executed on the remote database engine.
 repeat,"repeat(expr, n)",Returns the string that repeats expr n times.
 replace,"replace(str, search [, replace])",Replaces all occurrences of search with replace.
 reverse,reverse(expr),Returns a reversed string or an array with reverse order of elements.
@@ -408,6 +428,7 @@ to_timestamp,"to_timestamp(expr[,fmt])",Returns expr cast to a timestamp using a
 to_unix_timestamp,"to_unix_timestamp(expr[,fmt])",Returns the timestamp in expr as a UNIX timestamp.
 to_utc_timestamp,"to_utc_timestamp(expr,timezone)",Returns the timestamp at UTC for a timestamp expr at timezone.
 to_varchar,"to_varchar(numExpr, fmt)",Returns numExpr cast to STRING using formatting fmt.”
+to_variant_object,to_variant_object(expr),"Converts a complex expression (ARRAY, MAP, STRUCT) into a VARIANT where maps and structs are converted to variant objects."
 transform,"transform(expr, func)",Transforms elements in an array in expr using the function func.
 transform_keys,"transform_keys(expr, func)",Transforms keys in a map in expr using the function func.
 transform_values,"transform_values(expr, func)",Transforms values in a map in expr using the function func.
