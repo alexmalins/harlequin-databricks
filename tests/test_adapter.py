@@ -1,6 +1,6 @@
 import os
-import sys
 from collections.abc import Iterator
+from importlib.metadata import entry_points
 
 import pytest
 from databricks import sql as databricks_sql
@@ -13,11 +13,6 @@ from harlequin_databricks.adapter import (
     HarlequinDatabricksAdapter,
     HarlequinDatabricksConnection,
 )
-
-if sys.version_info < (3, 10):
-    from importlib_metadata import entry_points
-else:
-    from importlib.metadata import entry_points
 
 
 def test_plugin_discovery() -> None:
