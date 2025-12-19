@@ -296,6 +296,7 @@ class HarlequinDatabricksConnection(HarlequinConnection):
                     for table_arrow, table_type_arrow in zip(
                         tables["TABLE_NAME"],
                         tables["TABLE_TYPE"],
+                        strict=True,
                     ):
                         table = table_arrow.as_py()
 
@@ -317,7 +318,9 @@ class HarlequinDatabricksConnection(HarlequinConnection):
                                 type_label=column_type.as_py(),
                             )
                             for column, column_type in zip(
-                                columns["COLUMN_NAME"], columns["TYPE_NAME"]
+                                columns["COLUMN_NAME"],
+                                columns["TYPE_NAME"],
+                                strict=True,
                             )
                         ]
 
@@ -351,7 +354,9 @@ class HarlequinDatabricksConnection(HarlequinConnection):
             # Sort the catalogs again to ensure legacy and unity catalogs appear alphabetically:
             catalog_items = [
                 catalog_item
-                for _, catalog_item in sorted(zip(seen_catalogs, catalog_items))
+                for _, catalog_item in sorted(
+                    zip(seen_catalogs, catalog_items, strict=True)
+                )
             ]
 
             self._existing_catalog = Catalog(items=catalog_items)
@@ -464,6 +469,7 @@ class HarlequinDatabricksConnection(HarlequinConnection):
                     for table_arrow, table_type_arrow in zip(
                         tables["table_name"],
                         tables["table_type"],
+                        strict=True,
                     ):
                         table = table_arrow.as_py()
 
@@ -482,7 +488,9 @@ class HarlequinDatabricksConnection(HarlequinConnection):
                                 type_label=column_type.as_py(),
                             )
                             for column, column_type in zip(
-                                columns["column_name"], columns["data_type"]
+                                columns["column_name"],
+                                columns["data_type"],
+                                strict=True,
                             )
                         ]
 

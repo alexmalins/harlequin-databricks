@@ -1,6 +1,6 @@
 [project]
 name = "harlequin-databricks"
-version = "0.6.3"
+version = "0.6.4"
 description = "A Harlequin adapter for Databricks."
 authors = [
     { name = "Alex Malins", email = "github@alexmalinsREMOVETHIS.com" },
@@ -23,6 +23,7 @@ classifiers = [
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "Operating System :: OS Independent",
     "Topic :: Database",
     "Topic :: Database :: Front-Ends",
@@ -41,12 +42,12 @@ keywords = [
     "data lake",
 ]
 dependencies = [
-    "databricks-sql-connector>=4.0.4",
-    "harlequin>=2.0.4",
+    "databricks-sql-connector>=4.2.3",
+    "harlequin>=2.5.0",
 ]
 
 [project.optional-dependencies]
-databricks-sdk = ["databricks-sdk>=0.57.0"]
+databricks-sdk = ["databricks-sdk>=0.76.0"]
 
 [project.urls]
 Homepage = "https://harlequin.sh/docs/databricks/index"
@@ -78,7 +79,7 @@ requires = ["uv_build>=0.7.16"]
 build-backend = "uv_build"
 
 [tool.ruff]
-target-version = "py39"
+target-version = "py310"
 
 [tool.ruff.lint]
 select = ["ALL"]
