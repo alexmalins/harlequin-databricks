@@ -4,7 +4,13 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
-## [0.6.3] - 2025-12-24
+## [0.6.4] - 2025-12-19
+
+### Bug Fixes
+
+- Add explicit Python 3.14 support (#23 & #25).
+
+## [0.6.3] - 2025-12-14
 
 ### Bug Fixes
 
@@ -150,7 +156,9 @@ is the one written with hyphens not underscores.
 
 -   Adds a Databricks adapter for SQL warehouses and DBR interactive clusters.
 
-[Unreleased]: https://github.com/alexmalins/harlequin-databricks/compare/0.6.3...HEAD
+[Unreleased]: https://github.com/alexmalins/harlequin-databricks/compare/0.6.4...HEAD
+
+[0.6.4]: https://github.com/alexmalins/harlequin-databricks/compare/0.6.3...0.6.4
 
 [0.6.3]: https://github.com/alexmalins/harlequin-databricks/compare/0.6.2...0.6.3
 

@@ -12,7 +12,7 @@ Note if you have a question about usage or a feature request, use the Discussion
 #### Environment
 
 OS version: <!-- Windows 11/Linux/macOS etc. -->
-Python version: <!-- 3.10/3.11/3.12/3.13 -->
+Python version: <!-- 3.10/3.11/3.12/3.13/3.14 -->
 harlequin-databricks version: <!-- ex. 0.5.2 -->
 harlequin version: <!-- ex. 1.24.0 -->
 Installed via: <!-- pip/conda-forge -->
